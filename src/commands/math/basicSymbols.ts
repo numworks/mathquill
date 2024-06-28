@@ -104,7 +104,7 @@ class DigitGroupingChar extends MQSymbol {
       middleDot.setGroupingClass('mq-ellipsis-middle');
       leftDot.setGroupingClass('mq-ellipsis-start');
       right = leftDot[L];
-      if (!(right instanceof DigitGroupingChar)) {
+      if (left === leftDot) {
         // e.g. `[-...5]` afer typing the `-`.
         // `left` is the left `.`, and `right` is the `-`.
         return;
