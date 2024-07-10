@@ -448,31 +448,25 @@
     padding-top: 0.2em;
     text-align: center;
     position: relative;
-
-    &:after {
-      position: absolute;
-      right: -0.1em;
-      top: -0.48em;
-      font-size: 0.5em;
-      content: '\27A4';
-    }
-    //really wish I could use :not here, but less doesn't seem to be happy with that
-    &.mq-arrow-left:after {
-      content: '';
-      display: none;
-    }
-    &.mq-arrow-left:before, &.mq-arrow-leftright:before {
-      position: absolute;
-      top: -0.48em;
-      left: -0.1em;
-      font-size: 0.5em;
-      content: '\27A4';
-      -moz-transform: scaleX(-1);
-      -o-transform: scaleX(-1);
-      -webkit-transform: scaleX(-1);
-      transform: scaleX(-1);
-      filter: FlipH;
-      -ms-filter: "FlipH";
-    }
   }
+}
+
+.mq-arrow-right-content {
+  position: absolute;
+  right: -0.1em;
+  top: -0.48em;
+  font-size: 0.5em;
+}
+
+.mq-arrow-left-content {
+  position: absolute;
+  top: -0.48em;
+  left: -0.1em;
+  font-size: 0.5em;
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
 }

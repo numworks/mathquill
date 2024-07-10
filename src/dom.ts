@@ -48,7 +48,11 @@ interface HtmlBuilder {
   block(
     type: HTMLTagName,
     attributes: CreateElementAttributes | undefined,
-    block: MathBlock
+    block: MathBlock,
+    opts?: {
+      beforeChild?: HTMLElement;
+      afterChild?: HTMLElement;
+    }
   ): HTMLElement;
   entityText(s: string): Text;
 }
@@ -87,9 +91,21 @@ h.text = (s: string) => document.createTextNode(s);
 h.block = (
   type: HTMLTagName,
   attributes: CreateElementAttributes | undefined,
-  block: MathBlock
+  block: MathBlock,
+  opts?: {
+    beforeChild?: HTMLElement;
+    afterChild: HTMLElement;
+  }
 ) => {
-  const out = h(type, attributes, [block.html()]);
+  const children: (DocumentFragment | HTMLElement)[] = [block.html()];
+  if (opts?.beforeChild) {
+    children.unshift(opts.beforeChild);
+  }
+  if (opts?.afterChild) {
+    children.push(opts.afterChild);
+  }
+
+  const out = h(type, attributes, children);
   block.setDOM(out);
   NodeBase.linkElementByBlockNode(out, block);
   return out;

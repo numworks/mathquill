@@ -91,6 +91,8 @@ var SVG_SYMBOLS = {
   },
 };
 
+const ArrowText = '\u27A4';
+
 class Style extends MathCommand {
   shouldNotSpeakDelimiters: boolean | undefined;
 
@@ -99,12 +101,29 @@ class Style extends MathCommand {
     tagName: HTMLTagName,
     attrs: { class: string },
     ariaLabel?: string,
-    opts?: { shouldNotSpeakDelimiters: boolean }
+    opts?: {
+      shouldNotSpeakDelimiters?: boolean;
+      beforeChild?: () => HTMLElement;
+      afterChild?: () => HTMLElement;
+    }
   ) {
-    super(
-      ctrlSeq,
-      new DOMView(1, (blocks) => h.block(tagName, attrs, blocks[0]))
-    );
+    if (opts?.beforeChild || opts?.afterChild) {
+      super(
+        ctrlSeq,
+        new DOMView(1, (blocks) => {
+          return h.block(tagName, attrs, blocks[0], {
+            beforeChild: opts.beforeChild?.(),
+            afterChild: opts.afterChild?.(),
+          });
+        })
+      );
+    } else {
+      super(
+        ctrlSeq,
+        new DOMView(1, (blocks) => h.block(tagName, attrs, blocks[0]))
+      );
+    }
+
     this.ariaLabel = ariaLabel || ctrlSeq.replace(/^\\/, '');
     this.mathspeakTemplate = [
       'Start' + this.ariaLabel + ',',
@@ -167,22 +186,36 @@ LatexCmds.overrightarrow = () =>
   new Style(
     '\\overrightarrow',
     'span',
-    { class: 'mq-non-leaf mq-overarrow mq-arrow-right' },
-    'Over Right Arrow'
+    { class: 'mq-non-leaf mq-overarrow' },
+    'Over Right Arrow',
+    {
+      afterChild: () =>
+        h('span', { class: 'mq-arrow-right-content' }, [h.text(ArrowText)]),
+    }
   );
 LatexCmds.overleftarrow = () =>
   new Style(
     '\\overleftarrow',
     'span',
-    { class: 'mq-non-leaf mq-overarrow mq-arrow-left' },
-    'Over Left Arrow'
+    { class: 'mq-non-leaf mq-overarrow' },
+    'Over Left Arrow',
+    {
+      beforeChild: () =>
+        h('span', { class: 'mq-arrow-left-content' }, [h.text(ArrowText)]),
+    }
   );
 LatexCmds.overleftrightarrow = () =>
   new Style(
     '\\overleftrightarrow ',
     'span',
-    { class: 'mq-non-leaf mq-overarrow mq-arrow-leftright' },
-    'Over Left and Right Arrow'
+    { class: 'mq-non-leaf mq-overarrow' },
+    'Over Left and Right Arrow',
+    {
+      beforeChild: () =>
+        h('span', { class: 'mq-arrow-left-content' }, [h.text(ArrowText)]),
+      afterChild: () =>
+        h('span', { class: 'mq-arrow-right-content' }, [h.text(ArrowText)]),
+    }
   );
 LatexCmds.overarc = () =>
   new Style(
