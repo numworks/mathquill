@@ -7,7 +7,6 @@ function bindSimpleBinop(latex: string) {
 }
 
 LatexCmds['∉'] = LatexCmds.notin = bindSimpleBinop('notin');
-LatexCmds['≅'] = LatexCmds.cong = bindSimpleBinop('cong');
 LatexCmds['≡'] = LatexCmds.equiv = bindSimpleBinop('equiv');
 LatexCmds['⊕'] = LatexCmds.oplus = bindSimpleBinop('oplus');
 LatexCmds['⊗'] = LatexCmds.otimes = bindSimpleBinop('otimes');
@@ -284,11 +283,6 @@ LatexCmds['⊙'] =
   LatexCmds.odot =
   LatexCmds.circledot =
     bindVanillaSymbol('\\odot ', '&#8857;', 'circle dot');
-LatexCmds['◯'] = LatexCmds.bigcirc = bindVanillaSymbol(
-  '\\bigcirc ',
-  '&#9711;',
-  'circle'
-);
 LatexCmds['†'] = LatexCmds.dagger = bindVanillaSymbol(
   '\\dagger ',
   '&#0134;',
@@ -532,11 +526,6 @@ LatexCmds['⋱'] = LatexCmds.ddots = bindVanillaSymbol(
 );
 // LatexCmds['√'] is defined in basicSymbols
 LatexCmds.surd = bindVanillaSymbol('\\surd ', '&#8730;', 'unresolved root');
-LatexCmds['△'] = LatexCmds.triangle = bindVanillaSymbol(
-  '\\triangle ',
-  '&#9651;',
-  'triangle'
-);
 LatexCmds['ℓ'] = LatexCmds.ell = bindVanillaSymbol('\\ell ', '&#8467;', 'ell');
 LatexCmds['⊤'] = LatexCmds.top = bindVanillaSymbol('\\top ', '&#8868;', 'top');
 LatexCmds['♭'] = LatexCmds.flat = bindVanillaSymbol(
@@ -848,19 +837,3 @@ LatexCmds['∩'] =
   LatexCmds.intersect =
   LatexCmds.intersection =
     bindBinaryOperator('\\cap ', '&cap;', 'intersection');
-
-// FIXME: the correct LaTeX would be ^\circ but we can't parse that
-LatexCmds['°'] =
-  LatexCmds.deg =
-  LatexCmds.degree =
-    bindVanillaSymbol('\\degree ', '&deg;', 'degrees');
-
-LatexCmds['∠'] =
-  LatexCmds.ang =
-  LatexCmds.angle =
-    bindVanillaSymbol('\\angle ', '&ang;', 'angle');
-LatexCmds['∡'] = LatexCmds.measuredangle = bindVanillaSymbol(
-  '\\measuredangle ',
-  '&#8737;',
-  'measured angle'
-);
