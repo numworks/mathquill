@@ -1503,7 +1503,8 @@ LatexCmds['△'] = LatexCmds.triangle = bindVanillaSymbol(
 LatexCmds['≅'] = LatexCmds.cong = bindBinaryOperator(
   '\\cong ',
   '&cong;',
-  'cong'
+  'cong',
+  'congruent'
 );
 
 LatexCmds['∡'] = LatexCmds.measuredangle = bindVanillaSymbol(
