@@ -1488,10 +1488,11 @@ LatexCmds['∠'] =
     bindVanillaSymbol('\\angle ', '&ang;', 'angle');
 
 // FIXME: the correct LaTeX would be ^\circ but we can't parse that
-LatexCmds['°'] =
-  LatexCmds.deg =
-  LatexCmds.degree =
-    bindVanillaSymbol('\\degree ', '&deg;', 'degrees');
+LatexCmds['°'] = LatexCmds.degree = bindVanillaSymbol(
+  '\\degree ',
+  '&deg;',
+  'degrees'
+);
 
 LatexCmds['△'] = LatexCmds.triangle = bindVanillaSymbol(
   '\\triangle ',
