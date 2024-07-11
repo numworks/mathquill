@@ -1520,3 +1520,17 @@ LatexCmds['▱'] = LatexCmds.parallelogram = bindVanillaSymbol(
   '&#9649;',
   'parallelogram'
 );
+
+LatexCmds['≇'] = LatexCmds.ncong = bindBinaryOperator(
+  '\\ncong ',
+  '&ncong;',
+  'ncong',
+  'not congruent'
+);
+
+LatexCmds['≁'] = LatexCmds.nsim = bindBinaryOperator(
+  '\\nsim ',
+  '&nsim;',
+  'nsim',
+  'not similar'
+);
