@@ -1487,7 +1487,8 @@ LatexCmds['∠'] =
   LatexCmds.angle =
     bindVanillaSymbol('\\angle ', '&ang;', 'angle');
 
-// FIXME: the correct LaTeX would be ^\circ but we can't parse that
+// Using degree instead of ^\circ for compatibility
+// with a pasted in unicode degree symbol
 LatexCmds['°'] = LatexCmds.degree = bindVanillaSymbol(
   '\\degree ',
   '&deg;',
