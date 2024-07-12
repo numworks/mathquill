@@ -107,22 +107,15 @@ class Style extends MathCommand {
       afterChild?: () => HTMLElement;
     }
   ) {
-    if (opts?.beforeChild || opts?.afterChild) {
-      super(
-        ctrlSeq,
-        new DOMView(1, (blocks) => {
-          return h.block(tagName, attrs, blocks[0], {
-            beforeChild: opts.beforeChild?.(),
-            afterChild: opts.afterChild?.(),
-          });
-        })
-      );
-    } else {
-      super(
-        ctrlSeq,
-        new DOMView(1, (blocks) => h.block(tagName, attrs, blocks[0]))
-      );
-    }
+    super(
+      ctrlSeq,
+      new DOMView(1, (blocks) => {
+        return h.block(tagName, attrs, blocks[0], {
+          beforeChild: opts?.beforeChild?.(),
+          afterChild: opts?.afterChild?.(),
+        });
+      })
+    );
 
     this.ariaLabel = ariaLabel || ctrlSeq.replace(/^\\/, '');
     this.mathspeakTemplate = [
