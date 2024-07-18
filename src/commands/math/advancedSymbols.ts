@@ -565,12 +565,6 @@ LatexCmds['♠'] = LatexCmds.spadesuit = bindVanillaSymbol(
   '&#9824;',
   'spade suit'
 );
-//not real LaTex command see https://github.com/mathquill/mathquill/pull/552 for more details
-LatexCmds['▱'] = LatexCmds.parallelogram = bindVanillaSymbol(
-  '\\parallelogram ',
-  '&#9649;',
-  'parallelogram'
-);
 LatexCmds['⬜'] = LatexCmds.square = bindVanillaSymbol(
   '\\square ',
   '&#11036;',

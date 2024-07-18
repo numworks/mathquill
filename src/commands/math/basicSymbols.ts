@@ -1513,3 +1513,10 @@ LatexCmds['∡'] = LatexCmds.measuredangle = bindVanillaSymbol(
   '&#8737;',
   'measured angle'
 );
+
+//not real LaTex command see https://github.com/mathquill/mathquill/pull/552 for more details
+LatexCmds['▱'] = LatexCmds.parallelogram = bindVanillaSymbol(
+  '\\parallelogram ',
+  '&#9649;',
+  'parallelogram'
+);
