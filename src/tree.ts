@@ -387,7 +387,7 @@ function prayWellFormed(parent: MQNode, leftward: NodeRef, rightward: NodeRef) {
       leftwardL: leftward && leftward[L],
       leftwardR: leftward && leftward[R],
       rightwardL: rightward && rightward[L],
-      rightwardR: rightward && rightward[R],
+      rightwardR: rightward && rightward[R]
     }
   );
 
@@ -407,7 +407,7 @@ function prayWellFormed(parent: MQNode, leftward: NodeRef, rightward: NodeRef) {
       leftwardR: leftward && leftward[R],
       rightwardL: rightward && rightward[L],
       rightwardR: rightward && rightward[R],
-      rightwardParent: rightward && rightward.parent,
+      rightwardParent: rightward && rightward.parent
     }
   );
 }
@@ -440,7 +440,7 @@ class Fragment {
 
     pray('no half-empty fragments', !withDir === !oppDir, {
       withDir,
-      oppDir,
+      oppDir
     });
 
     if (!withDir || !oppDir) {
@@ -457,7 +457,7 @@ class Fragment {
 
     const ends = {
       [dir as Direction]: withDir,
-      [-dir as Direction]: oppDir,
+      [-dir as Direction]: oppDir
     } as Ends<MQNode>;
 
     this.setEnds(ends);

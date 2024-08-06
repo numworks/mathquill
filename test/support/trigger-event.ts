@@ -10,7 +10,7 @@ const trigger = {
     el.dispatchEvent(new FocusEvent('blur'));
     el.dispatchEvent(new FocusEvent('focusout'));
   },
-  _: '',
+  _: ''
 };
 
 trigger._ = 'dummy usage of "trigger" to satisfy TypeScript';
@@ -29,7 +29,7 @@ function triggerKeyboardEvent(
   el.dispatchEvent(
     new KeyboardEvent(type, {
       ...modifiers,
-      key,
+      key
     })
   );
 }

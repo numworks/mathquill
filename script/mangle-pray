@@ -13,7 +13,8 @@ function shouldRemove(el) {
   if (el[0] === 'defun' && el[1].indexOf('pray' === 0)) return true;
 
   // pray(...)
-  if (el[0] === 'call' && el[1][0] === 'name' && el[1][1].indexOf('pray') === 0) return true;
+  if (el[0] === 'call' && el[1][0] === 'name' && el[1][1].indexOf('pray') === 0)
+    return true;
 
   // remove the entire statement containing pray();
   if (el[0] === 'stat' && shouldRemove(el[1])) return true;
@@ -21,24 +22,24 @@ function shouldRemove(el) {
   return false;
 }
 
-var manglePray = exports.manglePray = function manglePray(ast) {
+var manglePray = (exports.manglePray = function manglePray(ast) {
   if (!Array.isArray(ast)) return ast;
 
   var out = [];
 
-  ast.forEach(function(el) {
+  ast.forEach(function (el) {
     if (shouldRemove(el)) return;
 
     out.push(manglePray(el));
   });
 
   return out;
-}
+});
 
-var getAst = exports.getAst = function getAst(fname) {
+var getAst = (exports.getAst = function getAst(fname) {
   var code = fs.readFileSync(fname, 'utf-8');
   return uglifyjs.parser.parse(code);
-}
+});
 
 function main() {
   var fname = process.argv[2];

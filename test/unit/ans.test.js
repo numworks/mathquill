@@ -3,7 +3,7 @@ suite('ans command', function () {
   var mq;
   setup(function () {
     mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
-      autoCommands: 'ans',
+      autoCommands: 'ans'
     });
   });
   teardown(function () {

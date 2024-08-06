@@ -8,7 +8,7 @@ Options.prototype.substituteTextarea = function () {
     autocomplete: 'off',
     autocorrect: 'off',
     spellcheck: false,
-    'x-palm-disable-ste-all': true,
+    'x-palm-disable-ste-all': true
   });
 };
 function defaultSubstituteKeyboardEvents(jq: $, controller: Controller) {
@@ -74,7 +74,7 @@ class Controller extends Controller_scrollHoriz {
       this.addTextareaEventListeners({
         copy: function () {
           ctrlr.setTextareaSelection();
-        },
+        }
       });
     }
 

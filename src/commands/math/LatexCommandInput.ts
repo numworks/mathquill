@@ -16,8 +16,8 @@ CharCmds['\\'] = class LatexCommandInput extends MathCommand {
     h('span', { class: 'mq-latex-command-input-wrapper mq-non-leaf' }, [
       h('span', { class: 'mq-latex-command-input mq-non-leaf' }, [
         h.text('\\'),
-        h.block('span', {}, blocks[0]),
-      ]),
+        h.block('span', {}, blocks[0])
+      ])
     ])
   );
   textTemplate = ['\\'];

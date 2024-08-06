@@ -82,7 +82,7 @@ var saneKeyboardEvents = (function () {
 
     46: 'Del',
 
-    144: 'NumLock',
+    144: 'NumLock'
   };
 
   const KEY_TO_MQ_KEY_STEM: Record<string, string | undefined> = {
@@ -92,7 +92,7 @@ var saneKeyboardEvents = (function () {
     ArrowUp: 'Up',
     Delete: 'Del',
     Escape: 'Esc',
-    ' ': 'Spacebar',
+    ' ': 'Spacebar'
   };
 
   function isArrowKey(e: KeyboardEvent) {
@@ -376,7 +376,7 @@ var saneKeyboardEvents = (function () {
           everyTick.trigger();
           e.preventDefault();
         },
-        input: onInput,
+        input: onInput
       });
     } else {
       controller.addTextareaEventListeners({
@@ -395,7 +395,7 @@ var saneKeyboardEvents = (function () {
           });
         },
         paste: onPaste,
-        input: onInput,
+        input: onInput
       });
     }
 

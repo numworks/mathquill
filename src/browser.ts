@@ -15,7 +15,7 @@ function getBoundingClientRect(el: HTMLElement): DOMRect {
       x: 0,
       y: 0,
       bottom: 0,
-      right: 0,
+      right: 0
     } as DOMRect;
   }
 

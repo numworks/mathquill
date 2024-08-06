@@ -18,7 +18,7 @@ class Aria {
   span = h('span', {
     class: 'mq-aria-alert',
     'aria-live': 'assertive',
-    'aria-atomic': 'true',
+    'aria-atomic': 'true'
   });
   msg = '';
   items: AriaQueueItem[] = [];

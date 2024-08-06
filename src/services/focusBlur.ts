@@ -113,7 +113,7 @@ class Controller_focusBlur extends Controller_exportText {
       cursor = ctrlr.cursor;
     this.addTextareaEventListeners({
       focus: this.handleTextareaFocusEditable,
-      blur: this.handleTextareaBlurEditable,
+      blur: this.handleTextareaBlurEditable
     });
     ctrlr.blurred = true;
     cursor.hide().parent.blur(cursor);
@@ -122,7 +122,7 @@ class Controller_focusBlur extends Controller_exportText {
   addStaticFocusBlurListeners() {
     this.addTextareaEventListeners({
       focus: this.handleTextareaFocusStatic,
-      blur: this.handleTextareaBlurStatic,
+      blur: this.handleTextareaBlurStatic
     });
   }
 }

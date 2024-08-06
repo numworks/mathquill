@@ -96,7 +96,7 @@ class TextBlock extends MQNode {
   }
   html() {
     const out = h('span', { class: 'mq-text-mode' }, [
-      h.text(this.textContents()),
+      h.text(this.textContents())
     ]);
     this.setDOM(out);
     NodeBase.linkElementByCmdNode(out, this);
@@ -472,15 +472,15 @@ LatexCmds.tt = LatexCmds.texttt = makeTextBlock(
 );
 LatexCmds.textsc = makeTextBlock('\\textsc', 'Variable font', 'span', {
   style: 'font-variant:small-caps',
-  class: 'mq-text-mode',
+  class: 'mq-text-mode'
 });
 LatexCmds.uppercase = makeTextBlock('\\uppercase', 'Uppercase', 'span', {
   style: 'text-transform:uppercase',
-  class: 'mq-text-mode',
+  class: 'mq-text-mode'
 });
 LatexCmds.lowercase = makeTextBlock('\\lowercase', 'Lowercase', 'span', {
   style: 'text-transform:lowercase',
-  class: 'mq-text-mode',
+  class: 'mq-text-mode'
 });
 
 class RootMathCommand extends MathCommand {

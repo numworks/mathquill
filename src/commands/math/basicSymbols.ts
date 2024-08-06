@@ -330,7 +330,7 @@ function bindVariable(
 }
 
 Options.prototype.autoCommands = {
-  _maxLength: 0,
+  _maxLength: 0
 };
 baseOptionProcessors.autoCommands = function (cmds: string | undefined) {
   if (typeof cmds !== 'string' || !/^[a-z]+(?: [a-z]+)*$/i.test(cmds)) {
@@ -660,7 +660,7 @@ var TwoWordOpNames = { limsup: 1, liminf: 1, projlim: 1, injlim: 1 };
 
 function defaultAutoOpNames() {
   const AutoOpNames: AutoDict = {
-    _maxLength: 9,
+    _maxLength: 9
   };
   var mostOps = (
     'arg deg det dim exp gcd hom inf ker lg lim ln log max min sup' +
@@ -1333,7 +1333,7 @@ var less: InequalityData = {
   ctrlSeqStrict: '<',
   htmlEntityStrict: '&lt;',
   textStrict: '<',
-  mathspeakStrict: 'less than',
+  mathspeakStrict: 'less than'
 };
 var greater: InequalityData = {
   ctrlSeq: '\\ge ',
@@ -1343,7 +1343,7 @@ var greater: InequalityData = {
   ctrlSeqStrict: '>',
   htmlEntityStrict: '&gt;',
   textStrict: '>',
-  mathspeakStrict: 'greater than',
+  mathspeakStrict: 'greater than'
 };
 
 class Greater extends Inequality {

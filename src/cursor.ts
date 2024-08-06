@@ -179,7 +179,7 @@ class Cursor extends Point {
     frag.addClass('mq-cursor');
     return {
       left,
-      right,
+      right
     };
   }
   unwrapGramp() {

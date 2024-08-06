@@ -27,7 +27,7 @@ suite('resetCursorOnBlur', function () {
 
   test('forgets cursor position with resetCursorOnBlur option', function (done) {
     var mq = MQ.MathField($el.appendTo('#mock')[0], {
-      resetCursorOnBlur: true,
+      resetCursorOnBlur: true
     });
 
     mq.latex('a=2');

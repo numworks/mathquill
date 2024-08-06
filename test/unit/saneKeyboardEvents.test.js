@@ -13,7 +13,7 @@ suite('saneKeyboardEvents', function () {
           el[0].addEventListener(key, listeners[key]);
         }
       },
-      ...opts,
+      ...opts
     };
   }
 
@@ -34,7 +34,7 @@ suite('saneKeyboardEvents', function () {
           assert.equal(el.val(), '', 'the textarea remains empty');
 
           done();
-        },
+        }
       })
     );
 
@@ -56,7 +56,7 @@ suite('saneKeyboardEvents', function () {
           assert.equal(el.val(), '', 'the textarea remains empty');
 
           done();
-        },
+        }
       })
     );
 
@@ -77,7 +77,7 @@ suite('saneKeyboardEvents', function () {
           assert.equal(key, 'Backspace', 'key is correctly set');
 
           done();
-        },
+        }
       })
     );
 
@@ -98,7 +98,7 @@ suite('saneKeyboardEvents', function () {
           assert.equal(key, 'Left');
 
           if (counter === 3) done();
-        },
+        }
       })
     );
 
@@ -115,7 +115,7 @@ suite('saneKeyboardEvents', function () {
       ['ArrowUp', 'Up'],
       ['Delete', 'Del'],
       ['Escape', 'Esc'],
-      [' ', 'Spacebar'],
+      [' ', 'Spacebar']
     ];
 
     var counter = 0;
@@ -127,7 +127,7 @@ suite('saneKeyboardEvents', function () {
           assert.equal(key, pairs[counter][1]);
           counter += 1;
           if (counter === pairs.length) done();
-        },
+        }
       })
     );
 
@@ -150,7 +150,7 @@ suite('saneKeyboardEvents', function () {
           assert.equal(key, 'Backspace');
 
           if (counter === 3) done();
-        },
+        }
       })
     );
 
@@ -254,7 +254,7 @@ suite('saneKeyboardEvents', function () {
           keystroke: function (key) {
             assert.equal(key, 'Left');
             el[0].blur();
-          },
+          }
         })
       );
 
@@ -284,7 +284,7 @@ suite('saneKeyboardEvents', function () {
             mockController({
               paste: function (text) {
                 onPaste(text);
-              },
+              }
             })
           );
 
@@ -311,7 +311,7 @@ suite('saneKeyboardEvents', function () {
             mockController({
               paste: function (text) {
                 onPaste(text);
-              },
+              }
             })
           );
 
@@ -342,7 +342,7 @@ suite('saneKeyboardEvents', function () {
               keystroke: noop,
               typedText: function (text) {
                 onText(text);
-              },
+              }
             })
           );
 
@@ -371,7 +371,7 @@ suite('saneKeyboardEvents', function () {
               keystroke: noop,
               typedText: function (text) {
                 onText(text);
-              },
+              }
             })
           );
 
@@ -458,7 +458,7 @@ suite('saneKeyboardEvents', function () {
             assert.equal(text, '$x^2+1$');
 
             done();
-          },
+          }
         })
       );
 
@@ -474,7 +474,7 @@ suite('saneKeyboardEvents', function () {
           paste: function (text) {
             assert.equal(text, 'foobar');
             done();
-          },
+          }
         })
       );
 
@@ -494,7 +494,7 @@ suite('saneKeyboardEvents', function () {
           paste: function (text) {
             assert.equal(text, 'foobar');
             done();
-          },
+          }
         })
       );
 
@@ -515,7 +515,7 @@ suite('saneKeyboardEvents', function () {
           paste: function (text) {
             assert.equal(text, 'foobar');
             done();
-          },
+          }
         })
       );
 
@@ -546,7 +546,7 @@ suite('saneKeyboardEvents', function () {
               'Pasting into a focused mathquill should not fire a focus event'
             );
             done();
-          },
+          }
         })
       );
 
@@ -565,7 +565,7 @@ suite('saneKeyboardEvents', function () {
         mockController({
           copy: function () {
             shim.select();
-          },
+          }
         })
       );
 

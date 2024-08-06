@@ -2,7 +2,7 @@
 
 var ts = require('typescript');
 
-function compileTypescript (tsSource) {
+function compileTypescript(tsSource) {
   compilerOptions = {
     target: 'es5'
   };
@@ -17,11 +17,11 @@ function compileTypescript (tsSource) {
 let contents = '';
 
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', function(data) {
-    contents += data;
+process.stdin.on('data', function (data) {
+  contents += data;
 });
 process.stdin.on('end', function () {
-    var ts = compileTypescript(contents);
-    console.log(ts);
-})
+  var ts = compileTypescript(contents);
+  console.log(ts);
+});
 process.stdin.resume();

@@ -4,7 +4,7 @@ var assert = (function () {
     explanation: string;
     constructor({
       message,
-      explanation,
+      explanation
     }: {
       message: string | undefined;
       explanation: string;
@@ -26,7 +26,7 @@ var assert = (function () {
 
       fail({
         message: message,
-        explanation: 'expected ' + thing + ' to be truthy',
+        explanation: 'expected ' + thing + ' to be truthy'
       });
     },
     equal: function <T>(thing1: T, thing2: T, message?: string) {
@@ -34,7 +34,7 @@ var assert = (function () {
 
       fail({
         message: message,
-        explanation: 'expected (' + thing1 + ') to equal (' + thing2 + ')',
+        explanation: 'expected (' + thing1 + ') to equal (' + thing2 + ')'
       });
     },
     throws: function (fn: Function, message?: string) {
@@ -50,11 +50,11 @@ var assert = (function () {
 
       fail({
         message: message,
-        explanation: 'expected ' + fn + ' to throw an error',
+        explanation: 'expected ' + fn + ' to throw an error'
       });
     },
     fail: function (message?: string) {
       fail({ message: message, explanation: 'generic fail' });
-    },
+    }
   };
 })();

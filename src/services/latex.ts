@@ -120,7 +120,7 @@ class Controller_latex extends Controller_keystroke {
     var ctx: LatexContext = {
       latex: '',
       startIndex: -1,
-      endIndex: -1,
+      endIndex: -1
     };
 
     var selection = this.cursor.selection;
@@ -174,7 +174,7 @@ class Controller_latex extends Controller_keystroke {
     return {
       latex: cleanLatex,
       startIndex: startIndex,
-      endIndex: endIndex,
+      endIndex: endIndex
     };
   }
 
@@ -186,7 +186,7 @@ class Controller_latex extends Controller_keystroke {
       return {
         latex: latex,
         prefix: latex.substr(0, latex.length - matches[0].length),
-        digits: matches[0],
+        digits: matches[0]
       };
     }
 

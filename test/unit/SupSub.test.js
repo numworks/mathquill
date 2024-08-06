@@ -11,11 +11,11 @@ suite('SupSub', function () {
 
   var expecteds = [
     'x_{ab} x_{ba}, x_{a}^{b} x_{a}^{b}; x_{ab} x_{ba}, x_{a}^{b} x_{a}^{b}; x_{a} x_{a}, x_{a}^{} x_{a}^{}',
-    'x_{b}^{a} x_{b}^{a}, x^{ab} x^{ba}; x_{b}^{a} x_{b}^{a}, x^{ab} x^{ba}; x_{}^{a} x_{}^{a}, x^{a} x^{a}',
+    'x_{b}^{a} x_{b}^{a}, x^{ab} x^{ba}; x_{b}^{a} x_{b}^{a}, x^{ab} x^{ba}; x_{}^{a} x_{}^{a}, x^{a} x^{a}'
   ];
   var expectedsAfterC = [
     'x_{abc} x_{bca}, x_{a}^{bc} x_{a}^{bc}; x_{ab}c x_{bca}, x_{a}^{b}c x_{a}^{b}c; x_{a}c x_{ca}, x_{a}^{}c x_{a}^{}c',
-    'x_{bc}^{a} x_{bc}^{a}, x^{abc} x^{bca}; x_{b}^{a}c x_{b}^{a}c, x^{ab}c x^{bca}; x_{}^{a}c x_{}^{a}c, x^{a}c x^{ca}',
+    'x_{bc}^{a} x_{bc}^{a}, x^{abc} x^{bca}; x_{b}^{a}c x_{b}^{a}c, x^{ab}c x^{bca}; x_{}^{a}c x_{}^{a}c, x^{a}c x^{ca}'
   ];
   'sub super'.split(' ').forEach(function (initSupsub, i) {
     var initialLatex = 'x_{a} x^{a}'.split(' ')[i];
@@ -30,7 +30,7 @@ suite('SupSub', function () {
         },
         function (mq, supsub) {
           mq.write(supsub + '{}');
-        },
+        }
       ][j];
 
       'sub super'.split(' ').forEach(function (supsub, k) {
@@ -41,7 +41,7 @@ suite('SupSub', function () {
             noop,
             function (mq) {
               mq.moveToLeftEnd().keystroke('Right');
-            },
+            }
           ][l];
 
           var expected = expecteds[i].split('; ')[j].split(', ')[k].split(' ')[
@@ -95,7 +95,7 @@ suite('SupSub', function () {
         },
         function (mq) {
           mq.write('³');
-        },
+        }
       ][j];
 
       'after before'.split(' ').forEach(function (side, k) {
@@ -103,7 +103,7 @@ suite('SupSub', function () {
           noop,
           function (mq) {
             mq.moveToLeftEnd().keystroke('Right');
-          },
+          }
         ][k];
 
         var expected = expecteds.split('; ')[i].split(', ')[j].split(' ')[k];

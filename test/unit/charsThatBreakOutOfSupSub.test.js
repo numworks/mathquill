@@ -3,7 +3,7 @@ suite('charsThatBreakOutOfSupSub', function () {
   var mq;
   setup(function () {
     mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
-      charsThatBreakOutOfSupSub: '+-=<>',
+      charsThatBreakOutOfSupSub: '+-=<>'
     });
     rootBlock = mq.__controller.root;
     controller = mq.__controller;

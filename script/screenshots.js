@@ -33,47 +33,47 @@ var browsers = [
   {
     config: {
       browserName: 'Internet Explorer',
-      platform: 'Windows XP',
+      platform: 'Windows XP'
     },
-    pinned: true, // assume pinned to IE 8
+    pinned: true // assume pinned to IE 8
   },
   {
     config: {
       browserName: 'Internet Explorer',
-      platform: 'Windows 7',
+      platform: 'Windows 7'
     },
-    pinned: true, // assume pinned to IE 11
+    pinned: true // assume pinned to IE 11
   },
   {
     config: {
       browserName: 'MicrosoftEdge',
-      platform: 'Windows 10',
-    },
+      platform: 'Windows 10'
+    }
   },
   {
     config: {
       browserName: 'Firefox',
-      platform: 'OS X 10.11',
-    },
+      platform: 'OS X 10.11'
+    }
   },
   {
     config: {
       browserName: 'Safari',
-      platform: 'OS X 10.11',
-    },
+      platform: 'OS X 10.11'
+    }
   },
   {
     config: {
       browserName: 'Chrome',
-      platform: 'OS X 10.11',
-    },
+      platform: 'OS X 10.11'
+    }
   },
   {
     config: {
       browserName: 'Firefox',
-      platform: 'Linux',
-    },
-  },
+      platform: 'Linux'
+    }
+  }
 ];
 
 browsers.forEach(function (browser) {
@@ -132,7 +132,7 @@ browsers.forEach(function (browser) {
         .then(function () {
           return [
             browserDriver.safeExecute('document.documentElement.scrollHeight'),
-            browserDriver.safeExecute('document.documentElement.clientHeight'),
+            browserDriver.safeExecute('document.documentElement.clientHeight')
           ];
         })
         .spread(function (scrollHeight, viewportHeight) {

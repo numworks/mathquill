@@ -15,8 +15,8 @@ suite('focusBlur', function () {
           upOutOf: function () {
             wasUpOutOfCalled = true;
             mq2.focus();
-          },
-        },
+          }
+        }
       });
       mq2 = MQ.MathField($('<span></span>').appendTo('#mock')[0]);
       wasUpOutOfCalled = false;

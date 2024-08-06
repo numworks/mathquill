@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -11,7 +11,9 @@
 
     <style type="text/css">
       code span {
-        font: 90% Verdana, sans-serif;
+        font:
+          90% Verdana,
+          sans-serif;
       }
       #codecogsimg {
         vertical-align: middle;
@@ -210,8 +212,8 @@
               //        location.hash = '#'+latex; //extremely performance-crippling in Chrome for some reason
               htmlSource.text(printTree(latexMath.html()));
               htmlTransplantExample.html(latexMath.html());
-            },
-          },
+            }
+          }
         });
         latexMath.focus();
 

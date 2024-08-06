@@ -4,10 +4,12 @@
 
 process.stdin.setEncoding('utf8');
 
-process.stdin.on('data', function(data) {
-  process.stdout.write(data.replace(/[^\x00-\x7F]/g, function(c) {
-    return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
-  }));
+process.stdin.on('data', function (data) {
+  process.stdout.write(
+    data.replace(/[^\x00-\x7F]/g, function (c) {
+      return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4);
+    })
+  );
 });
 
 process.stdin.resume();

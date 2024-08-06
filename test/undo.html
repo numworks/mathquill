@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <title>MathQuill Undo Test Page</title>
@@ -22,8 +22,8 @@
           edit: function () {
             previousLatex = latexSpan.textContent;
             latexSpan.textContent = mathField.latex();
-          },
-        },
+          }
+        }
       });
 
       document.addEventListener('keydown', (e) => {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -49,7 +49,7 @@
         autoCommands:
           'alpha beta sqrt theta phi pi tau nthroot sum prod int ans percent mid square',
         autoParenthesizedFunctions: 'sin cos',
-        enableDigitGrouping: false,
+        enableDigitGrouping: false
       });
 
       var mqEnabled = MQ.MathField($('#grouping-enabled')[0], {
@@ -57,7 +57,7 @@
         autoCommands:
           'alpha beta sqrt theta phi pi tau nthroot sum prod int ans percent mid square',
         autoParenthesizedFunctions: 'sin cos',
-        enableDigitGrouping: true,
+        enableDigitGrouping: true
       });
 
       var mqOptimized = MQ.MathField($('#optimized')[0], {
@@ -65,7 +65,7 @@
         autoCommands:
           'alpha beta sqrt theta phi pi tau nthroot sum prod int ans percent mid square',
         autoParenthesizedFunctions: 'sin cos',
-        enableDigitGrouping: true,
+        enableDigitGrouping: true
       });
 
       var mqEdgeCases = MQ.MathField($('#edge-cases')[0], {
@@ -73,7 +73,7 @@
         autoCommands:
           'alpha beta sqrt theta phi pi tau nthroot sum prod int ans percent mid square',
         autoParenthesizedFunctions: 'sin cos',
-        enableDigitGrouping: true,
+        enableDigitGrouping: true
       });
 
       var optimizedLatexs = [
@@ -88,7 +88,7 @@
         '12356.3',
         '12356.3234',
         '12356.3234.23',
-        '12356.323423',
+        '12356.323423'
       ];
       setInterval(function () {
         // cycle through the latex values
@@ -113,7 +113,7 @@
         '2..',
         '..2',
         '\\ \\ ',
-        '\\ \\ \\ ',
+        '\\ \\ \\ '
       ];
       setInterval(function () {
         // cycle through the latex values

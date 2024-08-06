@@ -246,7 +246,7 @@ suite('latex', function () {
           {
             toString: function () {
               return 'thing';
-            },
+            }
           },
           'thing'
         );
@@ -412,8 +412,8 @@ suite('latex', function () {
             '\\frac{d|}{dx}\\sqrt{x}=',
             '\\frac{|d}{dx}\\sqrt{x}=',
             '|\\frac{d}{dx}\\sqrt{x}=',
-            '|\\frac{d}{dx}\\sqrt{x}=',
-          ],
+            '|\\frac{d}{dx}\\sqrt{x}='
+          ]
         };
 
         executeCases(cases, [], 'Left');
@@ -436,8 +436,8 @@ suite('latex', function () {
             '\\frac{d}{dx}\\sqrt{x|}=',
             '\\frac{d}{dx}\\sqrt{x}|=',
             '\\frac{d}{dx}\\sqrt{x}=|',
-            '\\frac{d}{dx}\\sqrt{x}=|',
-          ],
+            '\\frac{d}{dx}\\sqrt{x}=|'
+          ]
         };
 
         executeCases(cases, ['Start'], 'Right');
@@ -453,8 +453,8 @@ suite('latex', function () {
             '\\frac{d}{dx}\\sqrt{x}|=|',
             '\\frac{d}{dx}|\\sqrt{x}=|',
             '|\\frac{d}{dx}\\sqrt{x}=|',
-            '|\\frac{d}{dx}\\sqrt{x}=|',
-          ],
+            '|\\frac{d}{dx}\\sqrt{x}=|'
+          ]
         };
 
         executeCases(cases, [], 'Shift-Left');
@@ -470,8 +470,8 @@ suite('latex', function () {
             '|\\frac{d}{dx}|\\sqrt{x}=',
             '|\\frac{d}{dx}\\sqrt{x}|=',
             '|\\frac{d}{dx}\\sqrt{x}=|',
-            '|\\frac{d}{dx}\\sqrt{x}=|',
-          ],
+            '|\\frac{d}{dx}\\sqrt{x}=|'
+          ]
         };
 
         executeCases(cases, ['Start'], 'Shift-Right');
@@ -486,7 +486,7 @@ suite('latex', function () {
             '\\sin|\\cos',
             '\\si|n\\cos',
             '\\s|in\\cos',
-            '|\\sin\\cos',
+            '|\\sin\\cos'
           ],
           '\\sin\\left(\\right)': [
             '\\sin\\left(\\right)|',
@@ -494,7 +494,7 @@ suite('latex', function () {
             '\\sin|\\left(\\right)',
             '\\si|n\\left(\\right)',
             '\\s|in\\left(\\right)',
-            '|\\sin\\left(\\right)',
+            '|\\sin\\left(\\right)'
           ],
           '\\sum _{n=0}^{100}': [
             '\\sum_{n=0}^{100}|',
@@ -506,8 +506,8 @@ suite('latex', function () {
             '\\sum_{n=|0}^{100}',
             '\\sum_{n|=0}^{100}',
             '\\sum_{|n=0}^{100}',
-            '|\\sum_{n=0}^{100}',
-          ],
+            '|\\sum_{n=0}^{100}'
+          ]
         };
 
         var leftShiftCases = {
@@ -516,9 +516,9 @@ suite('latex', function () {
             '\\sin|\\left(\\right)|',
             '\\si|n\\left(\\right)|',
             '\\s|in\\left(\\right)|',
-            '|\\sin\\left(\\right)|',
+            '|\\sin\\left(\\right)|'
           ],
-          '\\sum _{n=0}^{100}': ['\\sum_{n=0}^{100}|', '|\\sum_{n=0}^{100}|'],
+          '\\sum _{n=0}^{100}': ['\\sum_{n=0}^{100}|', '|\\sum_{n=0}^{100}|']
         };
 
         var rightShiftCases = {
@@ -527,8 +527,8 @@ suite('latex', function () {
             '|\\s|in\\left(\\right)',
             '|\\si|n\\left(\\right)',
             '|\\sin|\\left(\\right)',
-            '|\\sin\\left(\\right)|',
-          ],
+            '|\\sin\\left(\\right)|'
+          ]
         };
 
         var twoShiftLeftCases = {
@@ -537,7 +537,7 @@ suite('latex', function () {
             '\\sin|\\c|os',
             '\\si|n\\c|os',
             '\\s|in\\c|os',
-            '|\\sin\\c|os',
+            '|\\sin\\c|os'
           ],
           '\\sin\\cos+': [
             '\\sin\\co|s+',
@@ -545,7 +545,7 @@ suite('latex', function () {
             '\\sin|\\co|s+',
             '\\si|n\\co|s+',
             '\\s|in\\co|s+',
-            '|\\sin\\co|s+',
+            '|\\sin\\co|s+'
           ],
           '\\sin\\cos+\\sin\\cos': [
             '\\sin\\cos+\\sin\\c|os',
@@ -554,8 +554,8 @@ suite('latex', function () {
             '\\sin\\cos+\\s|in\\c|os',
             '\\sin\\cos+|\\sin\\c|os',
             '\\sin\\cos|+\\sin\\c|os',
-            '\\sin\\co|s+\\sin\\c|os',
-          ],
+            '\\sin\\co|s+\\sin\\c|os'
+          ]
         };
 
         var fourShiftLeftCases = {
@@ -564,7 +564,7 @@ suite('latex', function () {
             '\\sin|\\cos+',
             '\\si|n|\\cos+',
             '\\s|in|\\cos+',
-            '|\\sin|\\cos+',
+            '|\\sin|\\cos+'
           ],
           '\\sin\\cos+\\sin\\cos': [
             '\\sin\\cos+\\si|n\\cos',
@@ -576,8 +576,8 @@ suite('latex', function () {
             '\\sin|\\cos+\\si|n\\cos',
             '\\si|n\\cos+\\si|n\\cos',
             '\\s|in\\cos+\\si|n\\cos',
-            '|\\sin\\cos+\\si|n\\cos',
-          ],
+            '|\\sin\\cos+\\si|n\\cos'
+          ]
         };
 
         executeCases(leftCases, [], 'Left');

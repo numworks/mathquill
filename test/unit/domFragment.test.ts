@@ -60,7 +60,7 @@ suite('DOMFragment', function () {
         h.text('text'),
         h('span'),
         h.text('text'),
-        h('span'),
+        h('span')
       ];
       // Insert children into a parent to make them siblings
       h('span', {}, children);
@@ -81,7 +81,7 @@ suite('DOMFragment', function () {
       h.text('text'),
       h('span'),
       h.text('text'),
-      h('span'),
+      h('span')
     ];
     const parent = h('span', {}, children);
     assert.ok(domFrag().isEmpty());
@@ -95,7 +95,7 @@ suite('DOMFragment', function () {
       h.text('text'),
       h('span'),
       h.text('text'),
-      h('span'),
+      h('span')
     ];
     const parent = h('span', {}, children);
     assert.ok(!domFrag().isOneNode());
@@ -233,7 +233,7 @@ suite('DOMFragment', function () {
         h.text('text'),
         h('span'),
         h.text('text'),
-        h('span'),
+        h('span')
       ];
       // Insert children into a parent to make them siblings
       h('span', {}, children);
@@ -404,7 +404,7 @@ suite('DOMFragment', function () {
       const el = h('span', {}, [
         h.text('a'),
         h('span', {}, [h.text('b'), h.text('c')]),
-        h('span'),
+        h('span')
       ]);
       assert.equal(domFrag(el).text(), 'abc');
       assert.equal(domFrag(el).children().text(), 'abc');
@@ -486,14 +486,14 @@ suite('DOMFragment', function () {
       name: '.insertBefore()',
       apply: function (self: DOMFragment, arg: DOMFragment) {
         return self.insertBefore(arg);
-      },
+      }
     },
     {
       name: '.insDirOf(L, ...)',
       apply: function (self: DOMFragment, arg: DOMFragment) {
         return self.insDirOf(L, arg);
-      },
-    },
+      }
+    }
   ]) {
     suite(name, () => {
       test('is a noop when called on an empty fragment', () => {
@@ -614,14 +614,14 @@ suite('DOMFragment', function () {
       name: '.insertAfter()',
       apply: function (self: DOMFragment, arg: DOMFragment) {
         return self.insertAfter(arg);
-      },
+      }
     },
     {
       name: '.insDirOf(R, ...)',
       apply: function (self: DOMFragment, arg: DOMFragment) {
         return self.insDirOf(R, arg);
-      },
-    },
+      }
+    }
   ]) {
     suite(name, () => {
       test('is a noop when called on an empty fragment', () => {
@@ -943,14 +943,14 @@ suite('DOMFragment', function () {
       name: '.appendTo()',
       apply: function (self: DOMFragment, arg: HTMLElement) {
         return self.appendTo(arg);
-      },
+      }
     },
     {
       name: '.insAtDirEnd(R, ...)',
       apply: function (self: DOMFragment, arg: HTMLElement) {
         return self.insAtDirEnd(R, arg);
-      },
-    },
+      }
+    }
   ]) {
     suite(name, () => {
       test('is a noop when this is an empty fragment', () => {
@@ -1027,14 +1027,14 @@ suite('DOMFragment', function () {
       name: '.prependTo()',
       apply: function (self: DOMFragment, arg: HTMLElement) {
         return self.prependTo(arg);
-      },
+      }
     },
     {
       name: '.insAtDirEnd(L, ...)',
       apply: function (self: DOMFragment, arg: HTMLElement) {
         return self.insAtDirEnd(L, arg);
-      },
-    },
+      }
+    }
   ]) {
     suite(name, () => {
       test('is a noop when this is an empty fragment', () => {
@@ -1148,13 +1148,13 @@ suite('DOMFragment', function () {
       assert.ok(
         nodeArraysEqual(domFrag(sourceParent).children().toNodeArray(), [
           sourceChildren[0],
-          target,
+          target
         ])
       );
       assert.ok(
         nodeArraysEqual(domFrag(target).children().toNodeArray(), [
           sourceChildren[1],
-          sourceChildren[2],
+          sourceChildren[2]
         ])
       );
     });
@@ -1180,7 +1180,7 @@ suite('DOMFragment', function () {
       assert.ok(frag.replaceWith(domFrag()).isValid());
       assert.ok(
         nodeArraysEqual(domFrag(targetParent).children().toNodeArray(), [
-          targetChildren[0],
+          targetChildren[0]
         ])
       );
     });
@@ -1223,7 +1223,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1237,7 +1237,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ] as const;
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1262,7 +1262,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ] as const;
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1284,7 +1284,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ] as const;
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1306,7 +1306,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1328,7 +1328,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1354,7 +1354,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1368,7 +1368,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1397,7 +1397,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1411,7 +1411,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       const parent = h('span', {}, children);
       const frag = domFrag(parent).children();
@@ -1447,7 +1447,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       // Insert children into a parent to make them siblings
       h('span', {}, children);
@@ -1481,7 +1481,7 @@ suite('DOMFragment', function () {
         h('span'),
         h.text('text'),
         h('span'),
-        h.text('text'),
+        h.text('text')
       ];
       // Insert children into a parent to make them siblings
       h('span', {}, children);
@@ -1512,7 +1512,7 @@ suite('DOMFragment', function () {
       const children = [
         h('span', {}, [h('span'), h.text('text'), h('span')]),
         h.text('text'),
-        h('span', {}, [h('span'), h.text('text'), h('span')]),
+        h('span', {}, [h('span'), h.text('text'), h('span')])
       ];
       const parent = h('span', {}, children);
       let foundNonEmpty = false;
@@ -1599,7 +1599,7 @@ suite('DOMFragment', function () {
         h('span', { class: 'a b' }),
         h.text('text'),
         h('span', { class: 'c' }),
-        h('span', { class: 'cls' }),
+        h('span', { class: 'cls' })
       ] as const;
       // Making children a tuple so we know we can read the classname
       // of the first and last element, but TS doesn't like handing a
@@ -1627,7 +1627,7 @@ suite('DOMFragment', function () {
         h('span', { class: 'a cls b' }),
         h.text('text'),
         h('span', { class: 'c cls' }),
-        h('span', { class: 'd' }),
+        h('span', { class: 'd' })
       ] as const;
       // Making children a tuple so we know we can read the classname
       // of the first and last element, but TS doesn't like handing a
@@ -1659,7 +1659,7 @@ suite('DOMFragment', function () {
         h('span', { class: 'a b' }),
         h.text('text'),
         h('span', { class: 'c' }),
-        h('span', { class: 'cls' }),
+        h('span', { class: 'cls' })
       ] as const;
       // Making children a tuple so we know we can read the classname
       // of the first and last element, but TS doesn't like handing a
@@ -1678,7 +1678,7 @@ suite('DOMFragment', function () {
         h('span', { class: 'a b' }),
         h.text('text'),
         h('span', { class: 'c' }),
-        h('span', { class: 'cls' }),
+        h('span', { class: 'cls' })
       ] as const;
       // Making children a tuple so we know we can read the classname
       // of the first and last element, but TS doesn't like handing a
@@ -1697,7 +1697,7 @@ suite('DOMFragment', function () {
         h('span', { class: 'a b cls' }),
         h.text('text'),
         h('span', { class: 'c cls' }),
-        h('span', { class: 'd' }),
+        h('span', { class: 'd' })
       ] as const;
       // Making children a tuple so we know we can read the classname
       // of the first and last element, but TS doesn't like handing a

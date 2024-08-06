@@ -14,7 +14,7 @@ suite('HTML', function () {
               const frag = document.createDocumentFragment();
               frag.appendChild(h.text(content));
               return frag;
-            },
+            }
           } as MathBlock;
         }
       }
@@ -58,7 +58,7 @@ suite('HTML', function () {
         new DOMView(2, (blocks) =>
           h('span', {}, [
             h.block('span', {}, blocks[0]),
-            h.block('span', {}, blocks[1]),
+            h.block('span', {}, blocks[1])
           ])
         )
       ),

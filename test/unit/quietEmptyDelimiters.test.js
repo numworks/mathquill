@@ -12,7 +12,7 @@ suite('quietEmptyDelimiters', function () {
     // Make parens transparent and verify the mq-quiet-delimiter class is applied.
     mq.latex('');
     mq.config({
-      quietEmptyDelimiters: '(',
+      quietEmptyDelimiters: '('
     });
     mq.typedText('sin(').keystroke('Tab');
     assert.equal(mq.latex(), '\\sin\\left(\\right)');
@@ -30,7 +30,7 @@ suite('quietEmptyDelimiters', function () {
     // Make parens transparent and verify the mq-quiet-delimiter class is applied.
     mq.latex('');
     mq.config({
-      quietEmptyDelimiters: '(',
+      quietEmptyDelimiters: '('
     });
     mq.latex('\\sin\\left(\\right)');
     assert.equal(el.find('.mq-quiet-delimiter').length, 1);

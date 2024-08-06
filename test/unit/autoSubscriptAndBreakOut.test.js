@@ -4,7 +4,7 @@ suite('autoSubscriptNumeralsAndCharsThatBreakOutOfSupSub', function () {
   setup(function () {
     mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
       charsThatBreakOutOfSupSub: '+-=<>',
-      autoSubscriptNumerals: true,
+      autoSubscriptNumerals: true
     });
     rootBlock = mq.__controller.root;
     controller = mq.__controller;

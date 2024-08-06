@@ -5,7 +5,7 @@ suite('CSS', function () {
       .css({
         fontSize: '16px',
         height: '25px', // must be greater than font-size * 115% + 2 * 2px (padding) + 2 * 1px (border)
-        width: '25px',
+        width: '25px'
       })
       .appendTo('#mock')[0];
     assert.equal(container.scrollHeight, 25);

@@ -7,8 +7,8 @@ suite('typing with auto-replaces', function () {
       handlers: {
         edit: function () {
           mostRecentlyReportedLatex = mq.latex();
-        },
-      },
+        }
+      }
     });
   });
 
@@ -65,7 +65,7 @@ suite('typing with auto-replaces', function () {
     test('digit grouping ellipsis affects LiveFraction', () => {
       mq.config({
         enableDigitGrouping: true,
-        tripleDotsAreEllipsis: true,
+        tripleDotsAreEllipsis: true
       });
       mq.typedText('1...2/');
       assertLatex('1...\\frac{2}{ }');
@@ -1146,13 +1146,13 @@ suite('typing with auto-replaces', function () {
     var normalConfig = {
       autoParenthesizedFunctions: 'sin cos tan ln',
       autoOperatorNames: 'sin ln',
-      autoCommands: 'sum int',
+      autoCommands: 'sum int'
     };
     var subscriptConfig = {
       autoParenthesizedFunctions: 'sin cos tan ln',
       autoOperatorNames: 'sin ln',
       autoCommands: 'sum int',
-      disableAutoSubstitutionInSubscripts: true,
+      disableAutoSubstitutionInSubscripts: true
     };
 
     setup(function () {
@@ -1245,7 +1245,7 @@ suite('typing with auto-replaces', function () {
   suite('typingSlashCreatesNewFraction', function () {
     setup(function () {
       mq.config({
-        typingSlashCreatesNewFraction: true,
+        typingSlashCreatesNewFraction: true
       });
     });
 
@@ -1264,12 +1264,12 @@ suite('typing with auto-replaces', function () {
   suite('autoCommands', function () {
     var normalConfig = {
       autoOperatorNames: 'sin pp',
-      autoCommands: 'pi tau phi theta Gamma sum prod sqrt nthroot cbrt percent',
+      autoCommands: 'pi tau phi theta Gamma sum prod sqrt nthroot cbrt percent'
     };
     var subscriptConfig = {
       autoOperatorNames: 'sin pp',
       autoCommands: 'pi tau phi theta Gamma sum prod sqrt nthroot cbrt percent',
-      disableAutoSubstitutionInSubscripts: true,
+      disableAutoSubstitutionInSubscripts: true
     };
 
     setup(function () {
@@ -1391,9 +1391,12 @@ suite('typing with auto-replaces', function () {
         ' limsup liminf injlim projlim Pr'
       ).split(' ');
       for (var i = 0; i < cmds.length; i += 1) {
-        assert.throws(function () {
-          MQ.config({ autoCommands: cmds[i] });
-        }, 'MQ.config({ autoCommands: "' + cmds[i] + '" })');
+        assert.throws(
+          function () {
+            MQ.config({ autoCommands: cmds[i] });
+          },
+          'MQ.config({ autoCommands: "' + cmds[i] + '" })'
+        );
       }
     });
 
@@ -1404,9 +1407,12 @@ suite('typing with auto-replaces', function () {
         ' '
       );
       for (var i = 0; i < cmds.length; i += 1) {
-        assert.throws(function () {
-          MQ.config({ autoCommands: cmds[i] });
-        }, 'MQ.config({ autoCommands: "' + cmds[i] + '" })');
+        assert.throws(
+          function () {
+            MQ.config({ autoCommands: cmds[i] });
+          },
+          'MQ.config({ autoCommands: "' + cmds[i] + '" })'
+        );
       }
     });
 

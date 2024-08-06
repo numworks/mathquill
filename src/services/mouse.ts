@@ -114,7 +114,7 @@ class Controller_mouse extends Controller_latex {
         cursor.clearSelection();
         updateCursor();
         unbindListeners();
-      },
+      }
     };
 
     if (ctrlr.blurred) {

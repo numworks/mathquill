@@ -219,7 +219,7 @@ class MathCommand extends MathElement {
       var r: number = l + el.offsetWidth;
       return {
         [L]: l,
-        [R]: r,
+        [R]: r
       };
     }
 

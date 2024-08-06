@@ -313,8 +313,8 @@ suite('Public API', function () {
         edit: function (_mq) {
           assert.equal(mq2.id, _mq.id);
           count += 1;
-        },
-      },
+        }
+      }
     });
     assert.equal(count, 0);
     mq2.latex('x^2');
@@ -329,8 +329,8 @@ suite('Public API', function () {
           if (count <= 2) assert.equal(mq1, undefined);
           else assert.equal(mq1.id, _mq.id);
           count += 1;
-        },
-      },
+        }
+      }
     });
     assert.equal(count, 2);
   });
@@ -415,8 +415,8 @@ suite('Public API', function () {
               assert.equal(_mq.id, mq.id);
               dir = _dir;
               deleteCounter += 1;
-            },
-          },
+            }
+          }
         });
 
         mq.latex('n+\\frac{n}{2}'); // starts at right edge
@@ -483,8 +483,8 @@ suite('Public API', function () {
         handlers: {
           edit: function () {
             count += 1;
-          },
-        },
+          }
+        }
       });
       mq.typedText('(3, 4');
       var countBeforeClosingBracket = count;
@@ -639,7 +639,7 @@ suite('Public API', function () {
   suite('maxDepth option', function () {
     setup(function () {
       mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
-        maxDepth: 1,
+        maxDepth: 1
       });
     });
     teardown(function () {
@@ -716,7 +716,7 @@ suite('Public API', function () {
       var mq, textarea;
       setup(function () {
         mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
-          statelessClipboard: true,
+          statelessClipboard: true
         });
         textarea = $(mq.el()).find('textarea');
       });
@@ -912,7 +912,7 @@ suite('Public API', function () {
       var mq;
       setup(function () {
         mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
-          leftRightIntoCmdGoes: 'up',
+          leftRightIntoCmdGoes: 'up'
         });
       });
 
@@ -1024,7 +1024,7 @@ suite('Public API', function () {
     });
     test('sum starts with `n=`', function () {
       var mq = MQ.MathField($('<span>').appendTo('#mock')[0], {
-        sumStartsWithNEquals: true,
+        sumStartsWithNEquals: true
       });
       assert.equal(mq.latex(), '');
 
@@ -1036,7 +1036,7 @@ suite('Public API', function () {
     });
     test('integral still has empty limits', function () {
       var mq = MQ.MathField($('<span>').appendTo('#mock')[0], {
-        sumStartsWithNEquals: true,
+        sumStartsWithNEquals: true
       });
       assert.equal(mq.latex(), '');
 
@@ -1055,7 +1055,7 @@ suite('Public API', function () {
           return $(
             '<span tabindex=0 style="display:inline-block;width:1px;height:1px" />'
           )[0];
-        },
+        }
       });
 
       assert.equal(mq.latex(), '');
@@ -1070,7 +1070,7 @@ suite('Public API', function () {
         overrideKeystroke: function (_key, evt) {
           key = _key;
           return mq.keystroke.apply(mq, arguments);
-        },
+        }
       });
       var key;
 
@@ -1081,7 +1081,7 @@ suite('Public API', function () {
       var mq = MQ.MathField($('<span>').appendTo('#mock')[0], {
         onCut: function () {
           count += 1;
-        },
+        }
       });
       var count = 0;
 
@@ -1119,10 +1119,10 @@ suite('Public API', function () {
                 keystroke: function (_key, evt) {
                   key = _key;
                   return handlers.keystroke.apply(handlers, arguments);
-                },
+                }
               })
             );
-          },
+          }
         });
         var key;
 
@@ -1138,10 +1138,10 @@ suite('Public API', function () {
                 cut: function () {
                   count += 1;
                   return handlers.cut.apply(handlers, arguments);
-                },
+                }
               })
             );
-          },
+          }
         });
         var count = 0;
 
@@ -1161,7 +1161,7 @@ suite('Public API', function () {
     test('throws for interface version 3', function () {
       assert.throws(() =>
         MQ.MathField(document.createElement('span'), {
-          substituteKeyboardEvents: function () {},
+          substituteKeyboardEvents: function () {}
         })
       );
     });
@@ -1223,7 +1223,7 @@ suite('Public API', function () {
         },
         latex: function () {
           return 'embedded latex';
-        },
+        }
       });
 
       assert.ok($('.embedded-html').length);
@@ -1252,7 +1252,7 @@ suite('Public API', function () {
         },
         latex: function () {
           return 'embedded latex';
-        },
+        }
       });
 
       assert.ok($('.embedded-html').length);
@@ -1275,7 +1275,7 @@ suite('Public API', function () {
         },
         latex: function () {
           return 'embedded latex';
-        },
+        }
       };
     });
     var mq = MQ.MathField(
@@ -1331,7 +1331,7 @@ suite('Public API', function () {
       var mq = MQ.StaticMath(
         domFrag(span).appendTo(document.querySelector('#mock')).oneElement(),
         {
-          mouseEvents: false,
+          mouseEvents: false
         }
       );
       assert.equal(

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -139,8 +139,8 @@
             handlers: {
               edit: function () {
                 count += 1;
-              },
-            }, // also test 'edit' hook
+              }
+            } // also test 'edit' hook
           })
             .focus()
             .moveToLeftEnd()
@@ -183,7 +183,7 @@
             charsThatBreakOutOfSupSub: '+-=<>',
             autoSubscriptNumerals: true,
             autoCommands: 'pi theta sqrt sum',
-            autoOperatorNames: 'only',
+            autoOperatorNames: 'only'
           });
         });
       </script>
@@ -1146,7 +1146,7 @@
             avgObj.avg = (avgObj.n * avgObj.avg + v) / (avgObj.n + 1);
             avgObj.n += 1;
             return avgObj.avg + 'ms (across ' + avgObj.n + ' trials)';
-          },
+          }
         };
       }
       var performance = window.performance || Date;
@@ -1176,7 +1176,7 @@
           start: start,
           duration: duration,
           log: currentLog,
-          timeline: timeline,
+          timeline: timeline
         });
         if (timeline.length) {
           // for tablets without a console
@@ -1234,11 +1234,11 @@
           return $(
             '<span tabindex=0 style="display:inline-block;width:1px;height:1px" />'
           )[0];
-        },
+        }
       });
 
       MQ.MathField($('#disable-typing')[0], {
-        overrideTypedText: $.noop,
+        overrideTypedText: $.noop
       });
 
       var OTTMQ = MQ.MathField($('#wrap-typing')[0], {
@@ -1246,13 +1246,13 @@
           OTTMQ.typedText('<');
           OTTMQ.typedText(text);
           OTTMQ.typedText('>');
-        },
+        }
       });
 
       var OKSMQ = MQ.MathField($('#select-all-right-arrow')[0], {
         overrideKeystroke: function (key) {
           OKSMQ.keystroke(key);
-        },
+        }
       });
 
       var MQ2 = MathQuill.getInterface(2);
@@ -1265,10 +1265,10 @@
               cut: $.noop,
               paste: $.noop,
               keystroke: $.noop,
-              typedText: $.noop,
+              typedText: $.noop
             })
           );
-        },
+        }
       });
 
       var SKEMQ1 = MQ2.MathField($('#wrap-typing-ske')[0], {
@@ -1280,10 +1280,10 @@
                 SKEMQ1.typedText('<');
                 SKEMQ1.typedText(text);
                 SKEMQ1.typedText('>');
-              },
+              }
             })
           );
-        },
+        }
       });
 
       var SKEMQ2 = MQ2.MathField($('#select-all-right-arrow-ske')[0], {
@@ -1293,10 +1293,10 @@
             $.extend({}, handlers, {
               keystroke: function (key) {
                 SKEMQ2.keystroke(key);
-              },
+              }
             })
           );
-        },
+        }
       });
     </script>
   </body>

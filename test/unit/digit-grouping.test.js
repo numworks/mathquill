@@ -28,7 +28,7 @@ suite('Digit Grouping', function () {
     var $el = $(mq.el());
     var actual = {
       latex: mq.latex(),
-      tree: buildTreeRecursively($el.find('.mq-root-block')),
+      tree: buildTreeRecursively($el.find('.mq-root-block'))
     };
 
     window.actual = actual;
@@ -40,14 +40,14 @@ suite('Digit Grouping', function () {
 
   test('edge cases', function () {
     var mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
-      enableDigitGrouping: true,
+      enableDigitGrouping: true
     });
     assertClasses(mq, {
       latex: '',
       tree: {
         classes: 'mq-root-block mq-empty',
-        content: '',
-      },
+        content: ''
+      }
     });
 
     mq.latex('1\\ ');
@@ -58,13 +58,13 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
-            content: '&nbsp;',
-          },
-        ],
-      },
+            content: '&nbsp;'
+          }
+        ]
+      }
     });
 
     mq.latex('\\ 1');
@@ -74,14 +74,14 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
             classes: 'mq-digit',
-            content: '1',
-          },
-        ],
-      },
+            content: '1'
+          }
+        ]
+      }
     });
 
     mq.latex('\\ 1\\ ');
@@ -91,17 +91,17 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
-            content: '&nbsp;',
-          },
-        ],
-      },
+            content: '&nbsp;'
+          }
+        ]
+      }
     });
 
     mq.latex('a');
@@ -111,10 +111,10 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: 'a',
-          },
-        ],
-      },
+            content: 'a'
+          }
+        ]
+      }
     });
 
     mq.latex('a\\ ');
@@ -124,13 +124,13 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: 'a',
+            content: 'a'
           },
           {
-            content: '&nbsp;',
-          },
-        ],
-      },
+            content: '&nbsp;'
+          }
+        ]
+      }
     });
 
     mq.latex('\\ a');
@@ -140,13 +140,13 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
-            content: 'a',
-          },
-        ],
-      },
+            content: 'a'
+          }
+        ]
+      }
     });
 
     mq.latex('a\\ a');
@@ -156,16 +156,16 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: 'a',
+            content: 'a'
           },
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
-            content: 'a',
-          },
-        ],
-      },
+            content: 'a'
+          }
+        ]
+      }
     });
 
     mq.latex('\\ a\\ ');
@@ -175,16 +175,16 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
-            content: 'a',
+            content: 'a'
           },
           {
-            content: '&nbsp;',
-          },
-        ],
-      },
+            content: '&nbsp;'
+          }
+        ]
+      }
     });
 
     mq.latex('.');
@@ -195,10 +195,10 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '.',
-          },
-        ],
-      },
+            content: '.'
+          }
+        ]
+      }
     });
 
     mq.latex('.\\ .');
@@ -209,17 +209,17 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
             classes: 'mq-digit',
-            content: '.',
-          },
-        ],
-      },
+            content: '.'
+          }
+        ]
+      }
     });
 
     mq.latex('..');
@@ -230,14 +230,14 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '.',
-          },
-        ],
-      },
+            content: '.'
+          }
+        ]
+      }
     });
 
     mq.latex('2..');
@@ -248,19 +248,19 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
 
-            content: '.',
-          },
-        ],
-      },
+            content: '.'
+          }
+        ]
+      }
     });
 
     mq.latex('..2');
@@ -271,18 +271,18 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '2',
-          },
-        ],
-      },
+            content: '2'
+          }
+        ]
+      }
     });
 
     mq.latex('\\ \\ ');
@@ -292,13 +292,13 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
-            content: '&nbsp;',
-          },
-        ],
-      },
+            content: '&nbsp;'
+          }
+        ]
+      }
     });
 
     mq.latex('\\ \\ \\ ');
@@ -308,16 +308,16 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block',
         content: [
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
-            content: '&nbsp;',
+            content: '&nbsp;'
           },
           {
-            content: '&nbsp;',
-          },
-        ],
-      },
+            content: '&nbsp;'
+          }
+        ]
+      }
     });
 
     mq.latex('1234');
@@ -328,35 +328,35 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit mq-group-leading-1',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit mq-group-start',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '4',
-          },
-        ],
-      },
+            content: '4'
+          }
+        ]
+      }
     });
   });
 
   test('efficient latex updates - grouping enabled', function () {
     var mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
-      enableDigitGrouping: true,
+      enableDigitGrouping: true
     });
     assertClasses(mq, {
       latex: '',
       tree: {
         classes: 'mq-root-block mq-empty',
-        content: '',
-      },
+        content: ''
+      }
     });
 
     mq.latex('.2322');
@@ -369,9 +369,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit', content: '2' },
           { classes: 'mq-digit', content: '3' },
           { classes: 'mq-digit', content: '2' },
-          { classes: 'mq-digit', content: '2' },
-        ],
-      },
+          { classes: 'mq-digit', content: '2' }
+        ]
+      }
     });
 
     mq.latex('1.2322');
@@ -382,30 +382,30 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '2',
-          },
-        ],
-      },
+            content: '2'
+          }
+        ]
+      }
     });
 
     mq.latex('1231.123');
@@ -416,38 +416,38 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit mq-group-leading-1',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit mq-group-start',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
-          },
-        ],
-      },
+            content: '3'
+          }
+        ]
+      }
     });
 
     mq.latex('1231.432');
@@ -458,38 +458,38 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit mq-group-leading-1',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit mq-group-start',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '4',
+            content: '4'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '2',
-          },
-        ],
-      },
+            content: '2'
+          }
+        ]
+      }
     });
 
     mq.latex('1231232.432');
@@ -500,50 +500,50 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit mq-group-leading-1',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit mq-group-start',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit mq-group-start',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '4',
+            content: '4'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '2',
-          },
-        ],
-      },
+            content: '2'
+          }
+        ]
+      }
     });
 
     mq.latex('12345...67890');
@@ -564,16 +564,16 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit', content: '7' },
           { classes: 'mq-digit', content: '8' },
           { classes: 'mq-digit', content: '9' },
-          { classes: 'mq-digit', content: '0' },
-        ],
-      },
+          { classes: 'mq-digit', content: '0' }
+        ]
+      }
     });
   });
 
   test('efficient latex updates - grouping and ellipsis enabled', function () {
     var mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
       enableDigitGrouping: true,
-      tripleDotsAreEllipsis: true,
+      tripleDotsAreEllipsis: true
     });
     mq.latex('12345...67890');
     assertClasses(mq, {
@@ -593,9 +593,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit mq-group-other', content: '7' },
           { classes: 'mq-digit mq-group-start', content: '8' },
           { classes: 'mq-digit mq-group-other', content: '9' },
-          { classes: 'mq-digit mq-group-other', content: '0' },
-        ],
-      },
+          { classes: 'mq-digit mq-group-other', content: '0' }
+        ]
+      }
     });
     mq.latex('12345....67890');
     assertClasses(mq, {
@@ -617,9 +617,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit', content: '7' },
           { classes: 'mq-digit', content: '8' },
           { classes: 'mq-digit', content: '9' },
-          { classes: 'mq-digit', content: '0' },
-        ],
-      },
+          { classes: 'mq-digit', content: '0' }
+        ]
+      }
     });
     mq.latex('1...\\ 6789');
     assertClasses(mq, {
@@ -635,9 +635,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit mq-group-leading-1', content: '6' },
           { classes: 'mq-digit mq-group-start', content: '7' },
           { classes: 'mq-digit mq-group-other', content: '8' },
-          { classes: 'mq-digit mq-group-other', content: '9' },
-        ],
-      },
+          { classes: 'mq-digit mq-group-other', content: '9' }
+        ]
+      }
     });
     mq.latex('12345.\\ ..6789');
     assertClasses(mq, {
@@ -657,9 +657,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit', content: '6' },
           { classes: 'mq-digit', content: '7' },
           { classes: 'mq-digit', content: '8' },
-          { classes: 'mq-digit', content: '9' },
-        ],
-      },
+          { classes: 'mq-digit', content: '9' }
+        ]
+      }
     });
     const n6789_2345 = [
       { classes: 'mq-digit mq-group-leading-1', content: '6' },
@@ -670,7 +670,7 @@ suite('Digit Grouping', function () {
       { classes: 'mq-digit', content: '2' },
       { classes: 'mq-digit', content: '3' },
       { classes: 'mq-digit', content: '4' },
-      { classes: 'mq-digit', content: '5' },
+      { classes: 'mq-digit', content: '5' }
     ];
     mq.latex('1...6789.2345');
     assertClasses(mq, {
@@ -682,9 +682,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit mq-ellipsis-start', content: '.' },
           { classes: 'mq-digit mq-ellipsis-middle', content: '.' },
           { classes: 'mq-digit mq-ellipsis-end', content: '.' },
-          ...n6789_2345,
-        ],
-      },
+          ...n6789_2345
+        ]
+      }
     });
     mq.latex('6789.2345...6789.2345');
     assertClasses(mq, {
@@ -696,9 +696,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit mq-ellipsis-start', content: '.' },
           { classes: 'mq-digit mq-ellipsis-middle', content: '.' },
           { classes: 'mq-digit mq-ellipsis-end', content: '.' },
-          ...n6789_2345,
-        ],
-      },
+          ...n6789_2345
+        ]
+      }
     });
     mq.latex('6789.2345...6789');
     assertClasses(mq, {
@@ -713,9 +713,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit mq-group-leading-1', content: '6' },
           { classes: 'mq-digit mq-group-start', content: '7' },
           { classes: 'mq-digit mq-group-other', content: '8' },
-          { classes: 'mq-digit mq-group-other', content: '9' },
-        ],
-      },
+          { classes: 'mq-digit mq-group-other', content: '9' }
+        ]
+      }
     });
     mq.latex('12345...67890...12345');
     assertClasses(mq, {
@@ -743,16 +743,16 @@ suite('Digit Grouping', function () {
           { classes: 'mq-digit mq-group-other', content: '2' },
           { classes: 'mq-digit mq-group-start', content: '3' },
           { classes: 'mq-digit mq-group-other', content: '4' },
-          { classes: 'mq-digit mq-group-other', content: '5' },
-        ],
-      },
+          { classes: 'mq-digit mq-group-other', content: '5' }
+        ]
+      }
     });
   });
 
   test('Digit spacing with non-digit before ellipsis', function () {
     var mq = MQ.MathField($('<span></span>').appendTo('#mock')[0], {
       enableDigitGrouping: true,
-      tripleDotsAreEllipsis: true,
+      tripleDotsAreEllipsis: true
     });
     mq.latex('1234-...');
     assertClasses(mq, {
@@ -767,9 +767,9 @@ suite('Digit Grouping', function () {
           { classes: 'mq-binary-operator', content: '−' },
           { classes: 'mq-digit mq-ellipsis-start', content: '.' },
           { classes: 'mq-digit mq-ellipsis-middle', content: '.' },
-          { classes: 'mq-digit mq-ellipsis-end', content: '.' },
-        ],
-      },
+          { classes: 'mq-digit mq-ellipsis-end', content: '.' }
+        ]
+      }
     });
     mq.latex('1234,\\ ...');
     assertClasses(mq, {
@@ -785,9 +785,9 @@ suite('Digit Grouping', function () {
           { content: '&nbsp;' },
           { classes: 'mq-digit mq-ellipsis-start', content: '.' },
           { classes: 'mq-digit mq-ellipsis-middle', content: '.' },
-          { classes: 'mq-digit mq-ellipsis-end', content: '.' },
-        ],
-      },
+          { classes: 'mq-digit mq-ellipsis-end', content: '.' }
+        ]
+      }
     });
   });
 
@@ -797,8 +797,8 @@ suite('Digit Grouping', function () {
       latex: '',
       tree: {
         classes: 'mq-root-block mq-empty',
-        content: '',
-      },
+        content: ''
+      }
     });
 
     mq.latex('1.2322');
@@ -809,30 +809,30 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '2',
-          },
-        ],
-      },
+            content: '2'
+          }
+        ]
+      }
     });
 
     mq.latex('1231.123');
@@ -843,38 +843,38 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
-          },
-        ],
-      },
+            content: '3'
+          }
+        ]
+      }
     });
 
     mq.latex('1231.432');
@@ -885,38 +885,38 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '4',
+            content: '4'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '2',
-          },
-        ],
-      },
+            content: '2'
+          }
+        ]
+      }
     });
 
     mq.latex('1231232.432');
@@ -927,50 +927,50 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '.',
+            content: '.'
           },
           {
             classes: 'mq-digit',
-            content: '4',
+            content: '4'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '2',
-          },
-        ],
-      },
+            content: '2'
+          }
+        ]
+      }
     });
   });
 
@@ -985,8 +985,8 @@ suite('Digit Grouping', function () {
       latex: '',
       tree: {
         classes: 'mq-root-block mq-empty',
-        content: '',
-      },
+        content: ''
+      }
     });
 
     $(mq.el()).find('textarea').focus();
@@ -996,10 +996,10 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block mq-hasCursor',
         content: [
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     mq.typedText('1');
@@ -1010,13 +1010,13 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     mq.typedText('2');
@@ -1029,25 +1029,25 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '4',
+            content: '4'
           },
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     mq.typedText('5');
@@ -1058,29 +1058,29 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit',
-            content: '4',
+            content: '4'
           },
           {
             classes: 'mq-digit',
-            content: '5',
+            content: '5'
           },
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     setTimeout(function () {
@@ -1091,29 +1091,29 @@ suite('Digit Grouping', function () {
           content: [
             {
               classes: 'mq-digit',
-              content: '1',
+              content: '1'
             },
             {
               classes: 'mq-digit',
-              content: '2',
+              content: '2'
             },
             {
               classes: 'mq-digit',
-              content: '3',
+              content: '3'
             },
             {
               classes: 'mq-digit',
-              content: '4',
+              content: '4'
             },
             {
               classes: 'mq-digit',
-              content: '5',
+              content: '5'
             },
             {
-              classes: 'mq-cursor',
-            },
-          ],
-        },
+              classes: 'mq-cursor'
+            }
+          ]
+        }
       });
 
       mq.keystroke('Left');
@@ -1124,29 +1124,29 @@ suite('Digit Grouping', function () {
           content: [
             {
               classes: 'mq-digit',
-              content: '1',
+              content: '1'
             },
             {
               classes: 'mq-digit',
-              content: '2',
+              content: '2'
             },
             {
               classes: 'mq-digit',
-              content: '3',
+              content: '3'
             },
             {
               classes: 'mq-digit',
-              content: '4',
+              content: '4'
             },
             {
-              classes: 'mq-cursor',
+              classes: 'mq-cursor'
             },
             {
               classes: 'mq-digit',
-              content: '5',
-            },
-          ],
-        },
+              content: '5'
+            }
+          ]
+        }
       });
 
       mq.keystroke('Backspace');
@@ -1157,25 +1157,25 @@ suite('Digit Grouping', function () {
           content: [
             {
               classes: 'mq-digit',
-              content: '1',
+              content: '1'
             },
             {
               classes: 'mq-digit',
-              content: '2',
+              content: '2'
             },
             {
               classes: 'mq-digit',
-              content: '3',
+              content: '3'
             },
             {
-              classes: 'mq-cursor',
+              classes: 'mq-cursor'
             },
             {
               classes: 'mq-digit',
-              content: '5',
-            },
-          ],
-        },
+              content: '5'
+            }
+          ]
+        }
       });
 
       $(mq.el()).find('textarea').blur();
@@ -1187,22 +1187,22 @@ suite('Digit Grouping', function () {
             content: [
               {
                 classes: 'mq-digit',
-                content: '1',
+                content: '1'
               },
               {
                 classes: 'mq-digit',
-                content: '2',
+                content: '2'
               },
               {
                 classes: 'mq-digit',
-                content: '3',
+                content: '3'
               },
               {
                 classes: 'mq-digit',
-                content: '5',
-              },
-            ],
-          },
+                content: '5'
+              }
+            ]
+          }
         });
         done();
       }, 1);
@@ -1221,8 +1221,8 @@ suite('Digit Grouping', function () {
       latex: '',
       tree: {
         classes: 'mq-root-block mq-empty',
-        content: '',
-      },
+        content: ''
+      }
     });
 
     $(mq.el()).find('textarea').focus();
@@ -1232,10 +1232,10 @@ suite('Digit Grouping', function () {
         classes: 'mq-root-block mq-hasCursor',
         content: [
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     mq.typedText('1');
@@ -1246,13 +1246,13 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit',
-            content: '1',
+            content: '1'
           },
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     mq.typedText('2');
@@ -1265,25 +1265,25 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit mq-group-leading-1',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit mq-group-start',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '4',
+            content: '4'
           },
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     mq.typedText('5');
@@ -1294,29 +1294,29 @@ suite('Digit Grouping', function () {
         content: [
           {
             classes: 'mq-digit mq-group-leading-2',
-            content: '1',
+            content: '1'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '2',
+            content: '2'
           },
           {
             classes: 'mq-digit mq-group-start',
-            content: '3',
+            content: '3'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '4',
+            content: '4'
           },
           {
             classes: 'mq-digit mq-group-other',
-            content: '5',
+            content: '5'
           },
           {
-            classes: 'mq-cursor',
-          },
-        ],
-      },
+            classes: 'mq-cursor'
+          }
+        ]
+      }
     });
 
     setTimeout(function () {
@@ -1327,29 +1327,29 @@ suite('Digit Grouping', function () {
           content: [
             {
               classes: 'mq-digit mq-group-leading-2',
-              content: '1',
+              content: '1'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '2',
+              content: '2'
             },
             {
               classes: 'mq-digit mq-group-start',
-              content: '3',
+              content: '3'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '4',
+              content: '4'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '5',
+              content: '5'
             },
             {
-              classes: 'mq-cursor',
-            },
-          ],
-        },
+              classes: 'mq-cursor'
+            }
+          ]
+        }
       });
 
       mq.keystroke('Left');
@@ -1360,29 +1360,29 @@ suite('Digit Grouping', function () {
           content: [
             {
               classes: 'mq-digit mq-group-leading-2',
-              content: '1',
+              content: '1'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '2',
+              content: '2'
             },
             {
               classes: 'mq-digit mq-group-start',
-              content: '3',
+              content: '3'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '4',
+              content: '4'
             },
             {
-              classes: 'mq-cursor',
+              classes: 'mq-cursor'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '5',
-            },
-          ],
-        },
+              content: '5'
+            }
+          ]
+        }
       });
 
       mq.keystroke('Backspace');
@@ -1393,25 +1393,25 @@ suite('Digit Grouping', function () {
           content: [
             {
               classes: 'mq-digit mq-group-leading-1',
-              content: '1',
+              content: '1'
             },
             {
               classes: 'mq-digit mq-group-start',
-              content: '2',
+              content: '2'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '3',
+              content: '3'
             },
             {
-              classes: 'mq-cursor',
+              classes: 'mq-cursor'
             },
             {
               classes: 'mq-digit mq-group-other',
-              content: '5',
-            },
-          ],
-        },
+              content: '5'
+            }
+          ]
+        }
       });
 
       $(mq.el()).find('textarea').blur();
@@ -1423,22 +1423,22 @@ suite('Digit Grouping', function () {
             content: [
               {
                 classes: 'mq-digit mq-group-leading-1',
-                content: '1',
+                content: '1'
               },
               {
                 classes: 'mq-digit mq-group-start',
-                content: '2',
+                content: '2'
               },
               {
                 classes: 'mq-digit mq-group-other',
-                content: '3',
+                content: '3'
               },
               {
                 classes: 'mq-digit mq-group-other',
-                content: '5',
-              },
-            ],
-          },
+                content: '5'
+              }
+            ]
+          }
         });
         done();
       }, 1);

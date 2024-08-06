@@ -8,7 +8,7 @@ function setupJqueryStub() {
 
     return {
       0: s,
-      html: () => (s as Element).innerHTML,
+      html: () => (s as Element).innerHTML
     };
   };
 }

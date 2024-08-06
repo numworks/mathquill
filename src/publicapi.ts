@@ -61,7 +61,7 @@ const processedOptions = {
   prefixOperatorNames: true,
   leftRightIntoCmdGoes: true,
   maxDepth: true,
-  interpretTildeAsSim: true,
+  interpretTildeAsSim: true
 };
 type ProcessedOption = keyof typeof processedOptions;
 
@@ -227,8 +227,8 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
     handlers: (handlers) => ({
       // casting to the v3 version of this type
       fns: (handlers as HandlerOptions) || {},
-      APIClasses,
-    }),
+      APIClasses
+    })
   };
 
   function config(currentOptions: CursorOptions, newOptions: ConfigOptions) {
@@ -239,7 +239,7 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
             [
               "As of interface version 3, the 'substituteKeyboardEvents'",
               "option is no longer supported. Use 'overrideTypedText' and",
-              "'overrideKeystroke' instead.",
+              "'overrideKeystroke' instead."
             ].join(' ')
           );
         }
@@ -480,7 +480,7 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
 
   var APIClasses: APIClasses = {
     AbstractMathQuill,
-    EditableField,
+    EditableField
   } as unknown as APIClasses;
 
   pray('API.StaticMath defined', API.StaticMath);

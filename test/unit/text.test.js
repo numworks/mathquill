@@ -7,8 +7,8 @@ suite('text', function () {
       handlers: {
         edit: function () {
           mostRecentlyReportedLatex = mq.latex();
-        },
-      },
+        }
+      }
     });
   });
 
