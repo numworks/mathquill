@@ -319,7 +319,7 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
     mathspeak() {
       return this.__controller.exportMathSpeak();
     }
-    latex(latex: unknown): typeof this;
+    latex(latex: unknown): this;
     latex(): string;
     latex(latex?: unknown) {
       if (arguments.length > 0) {
