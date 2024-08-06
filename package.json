@@ -24,8 +24,5 @@
   },
   "lint-staged": {
     "*.{ts,js,css,html}": "prettier --write"
-  },
-  "scripts": {
-    "prepare": "husky install"
   }
 }
