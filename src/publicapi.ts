@@ -334,7 +334,14 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
     selection() {
       return this.__controller.exportLatexSelection();
     }
-
+    select() {
+      this.__controller.selectAll();
+      return this;
+    }
+    clearSelection() {
+      this.__controller.cursor.clearSelection();
+      return this;
+    }
     html() {
       return this.__controller.root
         .domFrag()
@@ -410,14 +417,6 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
 
       ctrlr.scrollHoriz();
       if (ctrlr.blurred) cursor.hide().parent.blur(cursor);
-      return this;
-    }
-    select() {
-      this.__controller.selectAll();
-      return this;
-    }
-    clearSelection() {
-      this.__controller.cursor.clearSelection();
       return this;
     }
 
