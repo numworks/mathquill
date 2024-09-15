@@ -33,6 +33,8 @@ declare namespace MathQuill {
       html: () => string;
       mathspeak: () => string;
       text(): string;
+      blur: () => void;
+      focus: () => void;
     }
 
     interface EditableMathQuill {
@@ -120,6 +122,7 @@ declare namespace MathQuill {
       typingSlashWritesDivisionSymbol?: boolean;
       typingPercentWritesPercentOf?: boolean;
       resetCursorOnBlur?: boolean | undefined;
+      tabbable?: boolean;
       leftRightIntoCmdGoes?: 'up' | 'down';
       enableDigitGrouping?: boolean;
       tripleDotsAreEllipsis?: boolean;
@@ -178,6 +181,8 @@ declare namespace MathQuill {
       html: () => string;
       mathspeak: () => string;
       text(): string;
+      blur: () => void;
+      focus: () => void;
     }
 
     interface EditableMathQuill extends BaseMathQuill {
@@ -188,8 +193,6 @@ declare namespace MathQuill {
       keystroke: (key: string, evt?: KeyboardEvent) => void;
       typedText: (text: string) => void;
       clearSelection: () => void;
-      blur: () => void;
-      focus: () => void;
       getAriaPostLabel: () => string;
       setAriaPostLabel: (str: string, timeout?: number) => void;
       ignoreNextMousedown: (func: () => boolean) => void;

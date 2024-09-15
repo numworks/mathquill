@@ -35,8 +35,12 @@ suite('aria', function () {
   test('MathQuillMathField aria-hidden', function () {
     var staticMath = MQ.StaticMath(container);
     staticMath.latex('1+\\sqrt{\\MathQuillMathField{x^2+y^2}}+\\frac{1}{x}');
-    var textArea = $(container).find('textarea');
-    assert.equal(textArea.length, 1, 'One text area for inner editable field');
+    assert.equal(
+      $(container).find('textarea').length,
+      2,
+      'Two text area for inner editable field'
+    );
+    var textArea = $(container).find('textarea:eq(0)');
     assert.equal(
       textArea.closest('[aria-hidden]="true"').length,
       0,

@@ -110,6 +110,13 @@
       </p>
 
       <p>
+        On the other hand, you can make static math tabbable to appear in the
+        tab order despite being non-editable. The entire range is selected when
+        tabbed into:
+        <span class="static-math-tabbable">1.234\times 10^{8}</span>.
+      </p>
+
+      <p>
         Note that if you're only rendering static math,
         <a href="http://mathjax.org">MathJax</a> supports more of LaTeX and
         renders better.
@@ -118,7 +125,7 @@
       <p>
         In many applications, such as a chat client, you probably type mostly
         normal text with some math interspersed, so there is also a MathQuill
-        textbox that let's you type math between $'s:
+        textbox that lets you type math between $'s:
         <span class="mathquill-text-field"
           >The Quadratic Equation is $x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$</span
         >
@@ -160,6 +167,9 @@
         });
         $('.static-math-no-mouse-events').each(function () {
           MQ.StaticMath(this, { mouseEvents: false });
+        });
+        $('.static-math-tabbable').each(function () {
+          MQ.StaticMath(this, { tabbable: true });
         });
         $('.mathquill-math-field').each(function () {
           MQ.MathField(this);

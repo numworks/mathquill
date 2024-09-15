@@ -88,7 +88,7 @@ class Options {
   constructor(public version: 1 | 2 | 3) {}
 
   ignoreNextMousedown: (_el: MouseEvent) => boolean;
-  substituteTextarea: () => HTMLElement;
+  substituteTextarea: (tabbable?: boolean) => HTMLElement;
   /** Only used in interface versions 1 and 2. */
   substituteKeyboardEvents: SubstituteKeyboardEvents;
 
@@ -106,6 +106,7 @@ class Options {
   leftRightIntoCmdGoes?: 'up' | 'down';
   enableDigitGrouping?: boolean;
   tripleDotsAreEllipsis?: boolean;
+  tabbable?: boolean;
   mouseEvents?: boolean;
   maxDepth?: number;
   disableCopyPaste?: boolean;
@@ -334,14 +335,6 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
     selection() {
       return this.__controller.exportLatexSelection();
     }
-    select() {
-      this.__controller.selectAll();
-      return this;
-    }
-    clearSelection() {
-      this.__controller.cursor.clearSelection();
-      return this;
-    }
     html() {
       return this.__controller.root
         .domFrag()
@@ -358,6 +351,15 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
       });
       return this;
     }
+    focus() {
+      this.__controller.getTextareaOrThrow().focus();
+      if (this.__controller.editable) this.__controller.scrollHoriz();
+      return this;
+    }
+    blur() {
+      this.__controller.getTextareaOrThrow().blur();
+      return this;
+    }
   }
 
   abstract class EditableField
@@ -371,15 +373,15 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
       this.__controller.editablesTextareaEvents();
       return this;
     }
-    focus() {
-      this.__controller.getTextareaOrThrow().focus();
-      this.__controller.scrollHoriz();
+    select() {
+      this.__controller.selectAll();
       return this;
     }
-    blur() {
-      this.__controller.getTextareaOrThrow().blur();
+    clearSelection() {
+      this.__controller.cursor.clearSelection();
       return this;
     }
+
     write(latex: string) {
       this.__controller.writeLatex(latex);
       this.__controller.scrollHoriz();

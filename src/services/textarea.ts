@@ -2,13 +2,14 @@
  * Manage the MathQuill instance's textarea
  * (as owned by the Controller)
  ********************************************/
-Options.prototype.substituteTextarea = function () {
+Options.prototype.substituteTextarea = function (tabbable?: boolean) {
   return h('textarea', {
     autocapitalize: 'off',
     autocomplete: 'off',
     autocorrect: 'off',
     spellcheck: false,
-    'x-palm-disable-ste-all': true
+    'x-palm-disable-ste-all': true,
+    tabindex: tabbable ? undefined : '-1'
   });
 };
 function defaultSubstituteKeyboardEvents(jq: $, controller: Controller) {
@@ -21,7 +22,13 @@ class Controller extends Controller_scrollHoriz {
 
   createTextarea() {
     this.textareaSpan = h('span', { class: 'mq-textarea' });
-    const textarea = this.options.substituteTextarea();
+
+    const tabbable =
+      this.options.tabbable !== undefined
+        ? this.options.tabbable
+        : this.KIND_OF_MQ !== 'StaticMath';
+
+    const textarea = this.options.substituteTextarea(tabbable);
     if (!textarea.nodeType) {
       throw 'substituteTextarea() must return a DOM element, got ' + textarea;
     }
@@ -180,6 +187,7 @@ class Controller extends Controller_scrollHoriz {
   setupStaticField() {
     this.mathspeakSpan = h('span', { class: 'mq-mathspeak' });
     domFrag(this.container).prepend(domFrag(this.mathspeakSpan));
+    domFrag(this.container).prepend(domFrag(this.textareaSpan));
     this.updateMathspeak();
     this.blurred = true;
     this.cursor.hide().parent.blur(this.cursor);
