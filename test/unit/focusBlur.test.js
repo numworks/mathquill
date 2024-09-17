@@ -138,7 +138,6 @@ suite('focusBlur', function () {
       'full textarea selected'
     );
 
-    console.log(document.activeElement);
     assert.equal($(document.activeElement).attr('tabindex'), '-1');
 
     mq.blur();

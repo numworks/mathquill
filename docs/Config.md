@@ -14,8 +14,10 @@ The configuration options object is of the following form:
   autoCommands: 'pi theta sqrt sum',
   autoOperatorNames: 'sin cos',
   maxDepth: 10,
-  substituteTextarea: function() {
-    return document.createElement('textarea');
+  substituteTextarea: function(tabbable) {
+    const textarea = document.createElement('textarea');
+    textarea.setAttribute('tabindex', tabbable ? '0' : '-1');
+    return textarea;
   },
   handlers: {
     edit: function(mathField) { ... },
@@ -119,7 +121,9 @@ You can also specify a speech-friendly representation of the operator name by su
 ## substituteTextarea
 
 `substituteTextarea` is a function that creates a focusable DOM element that is called when setting up a math field. Overwriting this may be useful for hacks like suppressing built-in virtual keyboards. It defaults to `<textarea autocorrect=off .../>`.
-For example, [Desmos](https://www.desmos.com/calculator) substitutes `<span tabindex=0></span>` on iOS to suppress the built-in virtual keyboard in favor of a custom math keypad that calls the MathQuill API. Unfortunately there's no universal [check for a virtual keyboard](http://stackoverflow.com/q/2593139/362030) or [way to detect a touchscreen](http://www.stucox.com/blog/you-cant-detect-a-touchscreen/), and even if you could, a touchscreen ≠ virtual keyboard (Windows 8 and ChromeOS devices have both physical keyboards and touchscreens and iOS and Android devices can have Bluetooth keyboards). Desmos currently sniffs the user agent for iOS, so Bluetooth keyboards just don't work in Desmos on iOS. The tradeoffs are up to you.
+For example, [Desmos](https://www.desmos.com/calculator) substitutes `<textarea inputmode=none />` to suppress the native virtual keyboard in favor of a custom math keypad that calls the MathQuill API. On old iOS versions that don't support `inputmode=none`, it uses `<span tabindex=0></span>` to suppress the native virtual keyboard, at the cost of bluetooth keyboards not working.
+
+The `substituteTextarea` takes one argument, a boolean `tabbable` that is true for editable math fields and for static math fields configured with `{tabbable: true}`. The textarea is permanently mounted to the page, so it should have `tabindex=-1` if `tabbable` is false.
 
 ## tabbable
 

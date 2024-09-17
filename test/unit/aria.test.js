@@ -40,6 +40,11 @@ suite('aria', function () {
       2,
       'Two text area for inner editable field'
     );
+    assert.equal(
+      $(container).find('textarea[tabindex=-1]').length,
+      1,
+      'The static math textarea is not tabbable.'
+    );
     var textArea = $(container).find('textarea:eq(0)');
     assert.equal(
       textArea.closest('[aria-hidden]="true"').length,
