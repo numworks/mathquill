@@ -360,6 +360,16 @@ var saneKeyboardEvents = (function () {
       everyTick.trigger(e);
     }
 
+    if (controller.KIND_OF_MQ === 'StaticMath') {
+      controller.addTextareaEventListeners({
+        keydown: (evt) => {
+          controller.options.overrideKeystroke?.(getMQKeyName(evt!), evt);
+        }
+      });
+
+      return { select };
+    }
+
     if (controller.options && controller.options.disableCopyPaste) {
       controller.addTextareaEventListeners({
         keydown: onKeydown,

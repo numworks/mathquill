@@ -1077,6 +1077,17 @@ suite('Public API', function () {
       trigger.keydown(mq.el().querySelector('textarea'), 'ArrowLeft');
       assert.equal(key, 'Left');
     });
+    test('can intercept key events on static', function () {
+      var mq = MQ.StaticMath($('<span>').appendTo('#mock')[0], {
+        overrideKeystroke: function (_key, evt) {
+          key = _key;
+        }
+      });
+      var key;
+
+      trigger.keydown(mq.el().querySelector('textarea'), 'ArrowLeft');
+      assert.equal(key, 'Left');
+    });
     test('cut is async', function (done) {
       var mq = MQ.MathField($('<span>').appendTo('#mock')[0], {
         onCut: function () {

@@ -87,12 +87,9 @@ class Controller extends Controller_scrollHoriz {
 
     this.addStaticFocusBlurListeners();
 
-    ctrlr.selectFn = function (text: string) {
-      const textarea = ctrlr.getTextareaOrThrow();
-      if (!(textarea instanceof HTMLTextAreaElement)) return;
-      textarea.value = text;
-      if (text) textarea.select();
-    };
+    const textarea = this.getTextareaOrThrow();
+    const { select } = saneKeyboardEvents(textarea, this);
+    this.selectFn = select;
   }
 
   editablesTextareaEvents() {
