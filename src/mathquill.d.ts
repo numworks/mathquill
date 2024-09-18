@@ -22,45 +22,29 @@ declare namespace MathQuill {
     interface BaseMathQuill {
       id: number;
       data: { [key: string]: any };
-      config(opts: Config): BaseMathQuill;
       revert: () => HTMLElement;
+      reflow: () => void;
+      el: () => HTMLElement;
+      getAriaLabel(): string;
+      html: () => string;
+      mathspeak: () => string;
+      text(): string;
+      selection(): {
+        latex: string;
+        startIndex: number;
+        endIndex: number;
+      };
+
+      //chainable methods
+      config(opts: Config): BaseMathQuill;
       latex(latex: string): BaseMathQuill;
       latex(): string;
-      reflow: () => void;
-      el: () => HTMLElement;
-      getAriaLabel(): string;
       setAriaLabel(str: string): BaseMathQuill;
-      html: () => string;
-      mathspeak: () => string;
-      text(): string;
-      blur: () => void;
-      focus: () => void;
-      selection(): {
-        latex: string;
-        startIndex: number;
-        endIndex: number;
-      };
+      blur(): BaseMathQuill;
+      focus(): BaseMathQuill;
     }
 
-    interface EditableMathQuill {
-      id: number;
-      data: { [key: string]: any };
-      revert: () => HTMLElement;
-      config(opts: Config): EditableMathQuill;
-      latex(latex: string): EditableMathQuill;
-      latex(): string;
-      reflow: () => void;
-      el: () => HTMLElement;
-      getAriaLabel(): string;
-      setAriaLabel(str: string): EditableMathQuill;
-      html: () => string;
-      mathspeak: () => string;
-      text(): string;
-      selection(): {
-        latex: string;
-        startIndex: number;
-        endIndex: number;
-      };
+    interface EditableMathQuill extends BaseMathQuill {
       select: () => EditableMathQuill;
       moveToRightEnd: () => EditableMathQuill;
       moveToLeftEnd: () => EditableMathQuill;
@@ -69,12 +53,18 @@ declare namespace MathQuill {
       keystroke: (key: string, evt?: KeyboardEvent) => EditableMathQuill;
       typedText: (text: string) => EditableMathQuill;
       clearSelection: () => EditableMathQuill;
-      blur: () => EditableMathQuill;
-      focus: () => EditableMathQuill;
       getAriaPostLabel: () => string;
       setAriaPostLabel: (str: string, timeout?: number) => EditableMathQuill;
       ignoreNextMousedown: (func: () => boolean) => EditableMathQuill;
       clickAt: (x: number, y: number, el: HTMLElement) => EditableMathQuill;
+
+      //override return signature on chainable methods
+      config(opts: Config): EditableMathQuill;
+      latex(latex: string): EditableMathQuill;
+      latex(): string;
+      setAriaLabel(str: string): EditableMathQuill;
+      blur(): EditableMathQuill;
+      focus(): EditableMathQuill;
     }
 
     interface API {
