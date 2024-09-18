@@ -35,6 +35,11 @@ declare namespace MathQuill {
       text(): string;
       blur: () => void;
       focus: () => void;
+      selection(): {
+        latex: string;
+        startIndex: number;
+        endIndex: number;
+      };
     }
 
     interface EditableMathQuill {
@@ -56,7 +61,6 @@ declare namespace MathQuill {
         startIndex: number;
         endIndex: number;
       };
-
       select: () => EditableMathQuill;
       moveToRightEnd: () => EditableMathQuill;
       moveToLeftEnd: () => EditableMathQuill;
