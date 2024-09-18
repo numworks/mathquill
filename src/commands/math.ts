@@ -723,9 +723,9 @@ API.StaticMath = function (APIClasses: APIClasses) {
         node.registerInnerField(innerFields, APIClasses.InnerMathField);
       });
     }
-    latex(s: string): IBaseMathQuill;
+    latex(s: string): this;
     latex(): string;
-    latex(_latex?: string): string | IBaseMathQuill {
+    latex(_latex?: string): string | this {
       var returned = super.latex.apply(this, arguments as unknown as any);
       if (arguments.length > 0) {
         var innerFields = (this.innerFields = []);

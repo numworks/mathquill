@@ -540,7 +540,7 @@ API.TextField = function (APIClasses: APIClasses) {
       return this;
     }
     latex(): string;
-    latex(l: string): IEditableField;
+    latex(l: string): this;
     latex(latex?: string) {
       if (latex) {
         this.__controller.renderLatexText(latex);

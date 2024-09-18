@@ -36,12 +36,12 @@ declare namespace MathQuill {
       };
 
       //chainable methods
-      config(opts: Config): BaseMathQuill;
-      latex(latex: string): BaseMathQuill;
+      config(opts: Config): this;
+      latex(latex: string): this;
       latex(): string;
-      setAriaLabel(str: string): BaseMathQuill;
-      blur(): BaseMathQuill;
-      focus(): BaseMathQuill;
+      setAriaLabel(str: string): this;
+      blur(): this;
+      focus(): this;
     }
 
     interface EditableMathQuill extends BaseMathQuill {
@@ -57,14 +57,6 @@ declare namespace MathQuill {
       setAriaPostLabel: (str: string, timeout?: number) => EditableMathQuill;
       ignoreNextMousedown: (func: () => boolean) => EditableMathQuill;
       clickAt: (x: number, y: number, el: HTMLElement) => EditableMathQuill;
-
-      //override return signature on chainable methods
-      config(opts: Config): EditableMathQuill;
-      latex(latex: string): EditableMathQuill;
-      latex(): string;
-      setAriaLabel(str: string): EditableMathQuill;
-      blur(): EditableMathQuill;
-      focus(): EditableMathQuill;
     }
 
     interface API {
