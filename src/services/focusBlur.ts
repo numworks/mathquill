@@ -71,14 +71,14 @@ class Controller_focusBlur extends Controller_exportText {
   };
 
   private handleTextareaFocusStatic = () => {
-    if (!this.cursor.selection || this.cursor.selection.isCleared()) {
+    if (!this.cursor.selection) {
       this.cursor.controller.selectAll();
     }
     this.blurred = false;
   };
 
   private handleTextareaBlurStatic = () => {
-    this.cursor.selection?.clear();
+    this.cursor.clearSelection();
   };
 
   private handleWindowBlur = () => {
