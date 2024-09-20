@@ -352,12 +352,12 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
       return this;
     }
     focus() {
-      this.__controller.getTextareaOrThrow().focus();
+      this.__controller.getTextarea().focus();
       if (this.__controller.editable) this.__controller.scrollHoriz();
       return this;
     }
     blur() {
-      this.__controller.getTextareaOrThrow().blur();
+      this.__controller.getTextarea().blur();
       return this;
     }
   }

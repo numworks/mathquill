@@ -157,15 +157,15 @@ class ControllerBase {
     );
   }
 
-  getTextareaOrThrow() {
-    var textarea = this.textarea;
-    if (!textarea) throw new Error('expected a textarea');
+  getTextarea() {
+    const textarea = this.textarea;
+    pray('textarea initialized', textarea);
     return textarea;
   }
 
-  getTextareaSpanOrThrow() {
-    var textareaSpan = this.textareaSpan;
-    if (!textareaSpan) throw new Error('expected a textareaSpan');
+  getTextareaSpan() {
+    const textareaSpan = this.textareaSpan;
+    pray('textareaSpan initialized', textareaSpan);
     return textareaSpan;
   }
 

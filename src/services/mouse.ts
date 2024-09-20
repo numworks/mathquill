@@ -47,7 +47,7 @@ class Controller_mouse extends Controller_latex {
     var ctrlr = root.controller,
       cursor = ctrlr.cursor,
       blink = cursor.blink;
-    var textarea = ctrlr.getTextareaOrThrow();
+    var textarea = ctrlr.getTextarea();
 
     e.preventDefault(); // doesn't work in IE≤8, but it's a one-line fix:
     (e.target as any).unselectable = true; // http://jsbin.com/yagekiji/1 // TODO - no idea what this unselectable property is
