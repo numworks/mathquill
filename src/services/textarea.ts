@@ -71,6 +71,7 @@ class Controller extends Controller_scrollHoriz {
     this.selectFn(latex);
   }
 
+  /** Requires `this.textarea` to be initialized. */
   staticMathTextareaEvents() {
     var ctrlr = this;
     this.removeTextareaEventListener('cut');
@@ -92,6 +93,7 @@ class Controller extends Controller_scrollHoriz {
     this.selectFn = select;
   }
 
+  /** Requires `this.textarea` to be initialized. */
   editablesTextareaEvents() {
     var ctrlr = this;
     const textarea = ctrlr.getTextareaOrThrow();
@@ -115,6 +117,7 @@ class Controller extends Controller_scrollHoriz {
     this.addEditableFocusBlurListeners();
     this.updateMathspeak();
   }
+
   unbindEditablesEvents() {
     var ctrlr = this;
     const textarea = ctrlr.getTextareaOrThrow();
