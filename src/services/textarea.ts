@@ -9,7 +9,8 @@ Options.prototype.substituteTextarea = function (tabbable?: boolean) {
     autocorrect: 'off',
     spellcheck: false,
     'x-palm-disable-ste-all': true,
-    tabindex: tabbable ? undefined : '-1'
+    tabindex: tabbable ? undefined : '-1',
+    'aria-hidden': !tabbable
   });
 };
 function defaultSubstituteKeyboardEvents(jq: $, controller: Controller) {
