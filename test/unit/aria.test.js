@@ -25,6 +25,22 @@ suite('aria', function () {
     var staticMath = MQ.StaticMath(container);
     staticMath.latex('1+\\frac{1}{x}');
     var ariaHiddenChildren = $(container).find('[aria-hidden]="true"');
+    assert.equal(ariaHiddenChildren.length, 2, '2 aria-hidden elements');
+    assert.ok(
+      ariaHiddenChildren[1].nodeName,
+      'textarea',
+      'aria-hidden is set on static math textarea'
+    );
+    assert.ok(
+      ariaHiddenChildren[1].classList.contains('mq-root-block'),
+      'aria-hidden is set on mq-root-block'
+    );
+  });
+
+  test('Tabbable static math aria-hidden', function () {
+    var staticMath = MQ.StaticMath(container, { tabbable: true });
+    staticMath.latex('1+\\frac{1}{x}');
+    var ariaHiddenChildren = $(container).find('[aria-hidden]="true"');
     assert.equal(ariaHiddenChildren.length, 1, '1 aria-hidden element');
     assert.ok(
       ariaHiddenChildren.hasClass('mq-root-block'),
@@ -48,8 +64,8 @@ suite('aria', function () {
     var textArea = $(container).find('textarea:eq(0)');
     assert.equal(
       textArea.closest('[aria-hidden]="true"').length,
-      0,
-      'Textarea has no aria-hidden parent'
+      1,
+      'Textarea has one aria-hidden parent'
     );
     var mathSpeak = $(container).find('.mq-mathspeak');
     assert.equal(mathSpeak.length, 1, 'One mathspeak region');

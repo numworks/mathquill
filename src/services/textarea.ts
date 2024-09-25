@@ -9,8 +9,7 @@ Options.prototype.substituteTextarea = function (tabbable?: boolean) {
     autocorrect: 'off',
     spellcheck: false,
     'x-palm-disable-ste-all': true,
-    tabindex: tabbable ? undefined : '-1',
-    'aria-hidden': !tabbable
+    tabindex: tabbable ? undefined : '-1'
   });
 };
 function defaultSubstituteKeyboardEvents(jq: $, controller: Controller) {
@@ -32,6 +31,10 @@ class Controller extends Controller_scrollHoriz {
     const textarea = this.options.substituteTextarea(tabbable);
     if (!textarea.nodeType) {
       throw 'substituteTextarea() must return a DOM element, got ' + textarea;
+    }
+    if (!this.options.tabbable && this.KIND_OF_MQ === 'StaticMath') {
+      // aria-hide noninteractive textarea element for static math
+      textarea.setAttribute('aria-hidden', 'true');
     }
     this.textarea = domFrag(textarea)
       .appendTo(this.textareaSpan)
