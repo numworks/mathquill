@@ -131,6 +131,14 @@ For static and editable math fields, when `tabbable` is false, the math field is
 
 Static math fields default to `tabbable: false`, Editable math fields default to `tabbable:true`.
 
+## disableAutoSubstitutionInSubscripts
+
+If `disableAutoSubstitutionInSubscripts` is `false` (default), then typing auto command names such as `int` will expand to `\int`, even in subscripts.
+
+If `disableAutoSubstitutionInSubscripts` is `true`, then such expansions are disabled in all subscripts, so users can type `A_{point}` without getting `A_{po\int}`.
+
+If `disableAutoSubstitutionInSubscripts` is `{except: "log"}`, then such expansions are disabled in all subscripts, _except_ for after `\log`, so users can type `\log_{\pi}(x)` again. Just like [`autoCommands`](#autocommands) above, the `except` property should be a string formatted as a space-delimited list of LaTeX commands.
+
 # Handlers
 
 Handlers are called after a specified event. They are called directly on the `handlers` object passed in, preserving the `this` value, so you can do stuff like:

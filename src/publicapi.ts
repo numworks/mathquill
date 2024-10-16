@@ -61,7 +61,8 @@ const processedOptions = {
   prefixOperatorNames: true,
   leftRightIntoCmdGoes: true,
   maxDepth: true,
-  interpretTildeAsSim: true
+  interpretTildeAsSim: true,
+  disableAutoSubstitutionInSubscripts: true
 };
 type ProcessedOption = keyof typeof processedOptions;
 
@@ -122,7 +123,9 @@ class Options {
   autoCommands: AutoDict;
   autoParenthesizedFunctions: AutoDict;
   quietEmptyDelimiters: { [id: string]: any };
-  disableAutoSubstitutionInSubscripts?: boolean;
+  disableAutoSubstitutionInSubscripts?:
+    | boolean
+    | { except: { [name in string]?: true } };
   interpretTildeAsSim: boolean;
   handlers?: {
     fns: HandlerOptions;
