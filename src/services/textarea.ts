@@ -12,6 +12,16 @@ Options.prototype.substituteTextarea = function (tabbable?: boolean) {
     tabindex: tabbable ? undefined : '-1'
   });
 };
+
+/* A light-weight function to generate a UUID */
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 function defaultSubstituteKeyboardEvents(jq: $, controller: Controller) {
   return saneKeyboardEvents(jq[0] as HTMLTextAreaElement, controller);
 }
@@ -189,7 +199,12 @@ class Controller extends Controller_scrollHoriz {
 
   /** Set up for a static MQ field (i.e., create and attach the mathspeak element and initialize the focus state to blurred) */
   setupStaticField() {
-    this.mathspeakSpan = h('span', { class: 'mq-mathspeak' });
+    this.mathspeakId = generateUUID();
+    this.mathspeakSpan = h('span', {
+      class: 'mq-mathspeak',
+      id: this.mathspeakId
+    });
+    this.textarea?.setAttribute('aria-labelledby', this.mathspeakId);
     domFrag(this.container).prepend(domFrag(this.mathspeakSpan));
     domFrag(this.container).prepend(domFrag(this.textareaSpan));
     this.updateMathspeak();
@@ -210,12 +225,13 @@ class Controller extends Controller_scrollHoriz {
     const textarea = ctrlr.getTextarea();
     // For static math, provide mathspeak in a visually hidden span to allow screen readers and other AT to traverse the content.
     // For editable math, assign the mathspeak to the textarea's ARIA label (AT can use text navigation to interrogate the content).
+    // For focusable static math, set the aria-label attribute to undefined as its aria-labelledby attribute (assigned during static math instantiation) links it to the mathspeak span.
     // Be certain to include the mathspeak for only one of these, though, as we don't want to include outdated labels if a field's editable state changes.
     // By design, also take careful note that the ariaPostLabel is meant to exist only for editable math (e.g. to serve as an evaluation or error message)
     // so it is not included for static math mathspeak calculations.
     // The mathspeakSpan should exist only for static math, so we use its presence to decide which approach to take.
     if (!!ctrlr.mathspeakSpan) {
-      textarea.setAttribute('aria-label', '');
+      textarea.removeAttribute('aria-label');
       ctrlr.mathspeakSpan.textContent = (
         labelWithSuffix +
         ' ' +
