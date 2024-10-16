@@ -46,6 +46,17 @@ suite('aria', function () {
       ariaHiddenChildren.hasClass('mq-root-block'),
       'aria-hidden is set on mq-root-block'
     );
+    var mathspeak = $(container).find('.mq-mathspeak');
+    assert.equal(mathspeak.length, 1, 'One mathspeak region');
+    var mathspeakId = mathspeak[0].getAttribute('id');
+    assert.ok(!!mathspeakId, 'mathspeak element assigned an id');
+    var textarea = $(container).find('textarea');
+    assert.equal(textarea.length, 1, 'One textarea');
+    assert.equal(
+      textarea[0].getAttribute('aria-labelledby'),
+      mathspeakId,
+      'textarea is aria-labelledby mathspeak region'
+    );
   });
 
   test('MathQuillMathField aria-hidden', function () {
