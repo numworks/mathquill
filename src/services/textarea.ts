@@ -204,7 +204,8 @@ class Controller extends Controller_scrollHoriz {
       class: 'mq-mathspeak',
       id: this.mathspeakId
     });
-    this.textarea?.setAttribute('aria-labelledby', this.mathspeakId);
+    const textarea = this.getTextarea();
+    textarea?.setAttribute('aria-labelledby', this.mathspeakId);
     domFrag(this.container).prepend(domFrag(this.mathspeakSpan));
     domFrag(this.container).prepend(domFrag(this.textareaSpan));
     this.updateMathspeak();
