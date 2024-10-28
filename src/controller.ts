@@ -194,7 +194,7 @@ class ControllerBase {
   }
 
   // overridden
-  updateMathspeak() {}
+  updateMathspeak(_opts?: { emptyContent: boolean }) {}
   scrollHoriz() {}
   selectionChanged() {}
   setOverflowClasses() {}

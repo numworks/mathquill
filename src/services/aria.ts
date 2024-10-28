@@ -93,8 +93,9 @@ class Aria {
     return this.clear();
   }
 
-  clear() {
+  clear(opts?: { emptyContent: boolean }) {
     this.items.length = 0;
+    if (opts?.emptyContent) this.span.textContent = '';
     return this;
   }
 }

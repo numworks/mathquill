@@ -49,13 +49,21 @@ class Controller extends Controller_scrollHoriz {
     this.textarea = domFrag(textarea)
       .appendTo(this.textareaSpan)
       .oneElement() as HTMLTextAreaElement;
-    this.mathspeakId = generateUUID();
-    this.mathspeakSpan = h('span', {
-      class: 'mq-mathspeak',
-      id: this.mathspeakId
-    });
-    textarea?.setAttribute('aria-labelledby', this.mathspeakId);
-    domFrag(this.textareaSpan).prepend(domFrag(this.mathspeakSpan));
+    if (!this.mathspeakSpan) {
+      // We want only one of these even if the textarea is replaced
+      this.mathspeakId = generateUUID();
+      this.mathspeakSpan = h('span', {
+        class: 'mq-mathspeak',
+        id: this.mathspeakId
+      });
+      domFrag(this.textareaSpan).prepend(domFrag(this.mathspeakSpan));
+    }
+    if (this.mathspeakId) {
+      textarea?.setAttribute('aria-labelledby', this.mathspeakId);
+    }
+    if (tabbable && this.mathspeakSpan) {
+      this.mathspeakSpan.setAttribute('aria-hidden', 'true');
+    }
 
     var ctrlr = this;
     ctrlr.cursor.selectionChanged = function () {
@@ -213,7 +221,7 @@ class Controller extends Controller_scrollHoriz {
     this.cursor.hide().parent.blur(this.cursor);
   }
 
-  updateMathspeak() {
+  updateMathspeak(opts?: { emptyContent: boolean }) {
     var ctrlr = this;
     // If the controller's ARIA label doesn't end with a punctuation mark, add a colon by default to better separate it from mathspeak.
     var ariaLabel = ctrlr.getAriaLabel();
@@ -221,7 +229,8 @@ class Controller extends Controller_scrollHoriz {
       ? ariaLabel + ':'
       : ariaLabel;
     var mathspeak = ctrlr.root.mathspeak().trim();
-    this.aria.clear();
+    const emptyContent = !!opts?.emptyContent;
+    this.aria.clear({ emptyContent });
 
     if (!!ctrlr.mathspeakSpan) {
       ctrlr.mathspeakSpan.textContent = (

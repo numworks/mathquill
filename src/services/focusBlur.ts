@@ -64,7 +64,7 @@ class Controller_focusBlur extends Controller_exportText {
       }); // none, intentional blur: #264
       this.cursor.clearSelection().endSelection();
       this.blur();
-      this.updateMathspeak();
+      this.updateMathspeak({ emptyContent: true });
       this.scrollHoriz();
     });
     window.addEventListener('blur', this.handleWindowBlur);
@@ -79,6 +79,7 @@ class Controller_focusBlur extends Controller_exportText {
 
   private handleTextareaBlurStatic = () => {
     this.cursor.clearSelection();
+    this.updateMathspeak({ emptyContent: true });
   };
 
   private handleWindowBlur = () => {
@@ -87,7 +88,7 @@ class Controller_focusBlur extends Controller_exportText {
     if (this.cursor.selection)
       this.cursor.selection.domFrag().addClass('mq-blur');
     this.blurWithoutResettingCursor();
-    this.updateMathspeak();
+    this.updateMathspeak({ emptyContent: true });
   };
 
   private blur() {
