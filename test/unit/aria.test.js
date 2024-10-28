@@ -14,7 +14,9 @@ suite('aria', function () {
   test('mathfield has aria-hidden on mq-root-block', function () {
     mathField.latex('1+\\frac{1}{x}');
     var ariaHiddenChildren = $(container).find('[aria-hidden]="true"');
-    assert.equal(ariaHiddenChildren.length, 1, '1 aria-hidden element');
+    // There will be two hidden children: the raw text of the field, and its mathspeak representation.
+    // The internal aria-labelledby attribute of the focusable text will still cause the mathspeak to be read aloud, while the visual math remains viewable.
+    assert.equal(ariaHiddenChildren.length, 2, '2 aria-hidden elements');
     assert.ok(
       ariaHiddenChildren.hasClass('mq-root-block'),
       'aria-hidden is set on mq-root-block'
@@ -41,7 +43,9 @@ suite('aria', function () {
     var staticMath = MQ.StaticMath(container, { tabbable: true });
     staticMath.latex('1+\\frac{1}{x}');
     var ariaHiddenChildren = $(container).find('[aria-hidden]="true"');
-    assert.equal(ariaHiddenChildren.length, 1, '1 aria-hidden element');
+    // There will be two hidden children: the raw text of the field, and its mathspeak representation.
+    // The internal aria-labelledby attribute of the focusable text will still cause the mathspeak to be read aloud, while the visual math remains viewable.
+    assert.equal(ariaHiddenChildren.length, 2, '2 aria-hidden elements');
     assert.ok(
       ariaHiddenChildren.hasClass('mq-root-block'),
       'aria-hidden is set on mq-root-block'
@@ -82,8 +86,8 @@ suite('aria', function () {
     assert.equal(mathSpeak.length, 2, 'Two mathspeak regions');
     assert.equal(
       mathSpeak.closest('[aria-hidden]="true"').length,
-      0,
-      'Mathspeak has no aria-hidden parent'
+      1,
+      'Mathspeak has 1 aria-hidden parent'
     );
     var nHiddenTexts = 0;
     var allChildren = $(container).find('*');
