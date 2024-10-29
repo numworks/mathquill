@@ -229,7 +229,7 @@ class Controller extends Controller_scrollHoriz {
       ? ariaLabel + ':'
       : ariaLabel;
     var mathspeak = ctrlr.root.mathspeak().trim();
-    const emptyContent = !!opts?.emptyContent;
+    const emptyContent = !!opts?.emptyContent; // Set when the focused field has been blurred so alert text is removed when it's no longer needed.
     this.aria.clear({ emptyContent });
 
     if (!!ctrlr.mathspeakSpan) {

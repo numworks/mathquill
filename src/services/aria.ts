@@ -93,6 +93,8 @@ class Aria {
     return this.clear();
   }
 
+  /* Clear out the internal alert message queue.
+   * If opts.emptyContent is set, also clear the rendered text content for the alert element (typically when the focused field has been blurred) so we don't leave stale alert text hanging around. */
   clear(opts?: { emptyContent: boolean }) {
     this.items.length = 0;
     if (opts?.emptyContent) this.span.textContent = '';
