@@ -1758,6 +1758,8 @@ type ArrayDelims = {
 /**
  * LaTeX array environment: \begin{env} a & b \\ c & d \end{env}.
  * Cells are the command's blocks, in row-major order.
+ * Enter adds a row below, Shift-Enter a column to the right (unless columns are
+ * fixed), Backspace in an empty row/column removes it.
  */
 class ArrayEnvironment extends MathCommand {
   blocks: MathBlock[];
@@ -1767,7 +1769,8 @@ class ArrayEnvironment extends MathCommand {
     public env: string,
     public delims: ArrayDelims,
     public rowCount: number,
-    public colCount: number
+    public colCount: number,
+    public hasFixedColumns: boolean
   ) {
     super('\\begin{' + env + '}');
     this.ariaLabel = env;
@@ -1843,22 +1846,18 @@ class ArrayEnvironment extends MathCommand {
   /** Parses what follows \begin{env}. Ragged rows are padded with empty cells. */
   bodyParser(): Parser<MQNode> {
     const { string, regex, optWhitespace } = Parser;
-    // In cases, `&` stays a symbol: there is a single column
-    const isSingleColumn = this.env === 'cases';
-    const cell: Parser<MathBlock> = isSingleColumn
-      ? latexMathParser
-      : optWhitespace
-          .then(regex(/^(?!&)/))
-          .then(latexMathParser.block)
-          .many()
-          .map((blocks) => {
-            const cell = new MathBlock();
-            blocks.forEach((block) =>
-              block.children().adopt(cell, cell.getEnd(R), 0)
-            );
-            return cell;
-          })
-          .skip(optWhitespace);
+    const cell = optWhitespace
+      .then(regex(/^(?!&)/))
+      .then(latexMathParser.block)
+      .many()
+      .map((blocks) => {
+        const cell = new MathBlock();
+        blocks.forEach((block) =>
+          block.children().adopt(cell, cell.getEnd(R), 0)
+        );
+        return cell;
+      })
+      .skip(optWhitespace);
     const separatedBy = <T>(item: Parser<T>, separator: Parser<unknown>) =>
       item.then((first) =>
         separator
@@ -1866,15 +1865,21 @@ class ArrayEnvironment extends MathCommand {
           .many()
           .map((rest) => [first].concat(rest))
       );
-    const row = isSingleColumn
-      ? cell.map((c) => [c])
-      : separatedBy(cell, string('&'));
 
-    return separatedBy(row, optWhitespace.then(string('\\\\')))
+    return separatedBy(
+      separatedBy(cell, string('&')),
+      optWhitespace.then(string('\\\\'))
+    )
       .skip(optWhitespace)
       .skip(string('\\end{' + this.env + '}'))
-      .map((rows) => {
-        const colCount = Math.max(...rows.map((cells) => cells.length));
+      .then((rows) => {
+        let colCount = Math.max(...rows.map((cells) => cells.length));
+        if (this.hasFixedColumns) {
+          if (colCount > this.colCount) {
+            return Parser.fail('too many columns in ' + this.env);
+          }
+          colCount = this.colCount;
+        }
         this.rowCount = rows.length;
         this.colCount = colCount;
         rows.forEach((cells) => {
@@ -1883,7 +1888,7 @@ class ArrayEnvironment extends MathCommand {
           }
         });
         this.relink();
-        return this;
+        return Parser.succeed(this);
       });
   }
 
@@ -1974,12 +1979,57 @@ class ArrayEnvironment extends MathCommand {
   }
 
   /** Returns true if the key was handled. */
-  cellKeystroke(_cell: MathBlock, _key: string, _ctrlr: Controller) {
-    return false;
+  cellKeystroke(cell: MathBlock, key: string, ctrlr: Controller) {
+    const addsRow = key === 'Enter';
+    const addsColumn = key === 'Shift-Enter' && !this.hasFixedColumns;
+    if (!addsRow && !addsColumn) return false;
+    const cursor = ctrlr.notify('edit').cursor;
+    const i = this.blocks.indexOf(cell);
+    const r = Math.floor(i / this.colCount);
+    const c = i % this.colCount;
+    if (addsRow) this.insertRow(r + 1);
+    else this.insertColumn(c + 1);
+    // Fixed columns hold different things (value, condition): restart a row
+    const target = addsRow
+      ? this.blocks[(r + 1) * this.colCount + (this.hasFixedColumns ? 0 : c)]
+      : this.blocks[r * this.colCount + c + 1];
+    cell.blur(cursor);
+    cursor.insAtLeftEnd(target);
+    return true;
   }
 
   deleteOutOfCell(cell: MathBlock, dir: Direction, cursor: Cursor) {
-    MathBlock.prototype.deleteOutOf.call(cell, dir, cursor);
+    const cols = this.colCount;
+    const i = this.blocks.indexOf(cell);
+    const r = Math.floor(i / cols);
+    const c = i % cols;
+    const rows = this.rows();
+    const isRowEmpty = rows[r].every((x) => x.isEmpty());
+    const isColEmpty = rows.every((cells) => cells[c].isEmpty());
+    // Lands next to the removed row/column, preferably in `dir`
+    const landIn = (index: number, side: Direction) =>
+      cursor.insAtDirEnd(side, this.blocks[index]);
+    const neighbor = cell[dir] as MathBlock | 0;
+
+    if (!neighbor && this.isEmpty()) {
+      MathBlock.prototype.deleteOutOf.call(cell, dir, cursor);
+    } else if (isRowEmpty && this.rowCount > 1) {
+      const hasRowInDir = dir === L ? r > 0 : r < this.rowCount - 1;
+      landIn(
+        (hasRowInDir ? r + dir : r - dir) * cols + c,
+        (hasRowInDir ? -dir : dir) as Direction
+      );
+      this.removeRow(r);
+    } else if (isColEmpty && cols > 1 && !this.hasFixedColumns) {
+      const hasColInDir = dir === L ? c > 0 : c < cols - 1;
+      landIn(
+        i + (hasColInDir ? dir : -dir),
+        (hasColInDir ? -dir : dir) as Direction
+      );
+      this.removeColumn(c);
+    } else if (neighbor) {
+      cursor.insAtDirEnd(-dir as Direction, neighbor);
+    }
   }
 
   /** Inserts an empty cell right of `leftCell` (0 for first position). */
@@ -2022,77 +2072,28 @@ class ArrayEnvironment extends MathCommand {
     this.updateGridColumns();
     this.relink();
   }
-
-  /** Moves the content of `from` at the end of `to`, and the cursor at the junction. */
-  moveContent(from: MathBlock, to: MathBlock, cursor: Cursor) {
-    const first = from.getEnd(L);
-    if (first) {
-      const moved = new Fragment(first, from.getEnd(R));
-      const movedDom = moved.domFrag();
-      moved.disown().adopt(to, to.getEnd(R), 0);
-      movedDom.appendTo(to.domFrag().oneElement());
-      cursor.insLeftOf(first);
-    } else {
-      cursor.insAtRightEnd(to);
-    }
-  }
 }
 
 /**
- * Left-braced rows, for piecewise functions and systems of equations.
- * Rows behave like text lines: Enter splits, Backspace/Delete merge.
+ * Left-braced rows of a value and a condition, for piecewise functions.
+ * The condition of the last row is optional.
  */
 class Cases extends ArrayEnvironment {
   constructor() {
-    super('cases', { [L]: '{' }, 2, 1);
+    super('cases', { [L]: '{' }, 2, 2, true);
   }
 
   text() {
-    return 'cases(' + this.blocks.map((row) => row.text()).join(',') + ')';
-  }
-
-  cellKeystroke(row: MathBlock, key: string, ctrlr: Controller) {
-    if (key !== 'Enter') return false;
-    const cursor = ctrlr.notify('edit').cursor;
-    const rowIndex = this.blocks.indexOf(row);
-    this.insertRow(rowIndex + 1);
-    const newRow = this.blocks[rowIndex + 1];
-    const right = cursor[R];
-    if (right) {
-      const moved = new Fragment(right, row.getEnd(R));
-      const movedDom = moved.domFrag();
-      moved.disown().adopt(newRow, 0, 0);
-      movedDom.appendTo(newRow.domFrag().oneElement());
-    }
-    row.blur(cursor);
-    cursor.insAtLeftEnd(newRow);
-    return true;
-  }
-
-  deleteOutOfCell(row: MathBlock, dir: Direction, cursor: Cursor) {
-    const neighbor = row[dir] as MathBlock | 0;
-    const other = row[-dir as Direction] as MathBlock | 0;
-    if (neighbor) {
-      const upper = dir === L ? neighbor : row;
-      const lower = dir === L ? row : neighbor;
-      this.moveContent(lower, upper, cursor);
-      this.removeRow(this.blocks.indexOf(lower));
-    } else if (row.isEmpty() && other) {
-      cursor.insAtDirEnd(dir, other);
-      this.removeRow(this.blocks.indexOf(row));
-    } else {
-      super.deleteOutOfCell(row, dir, cursor);
-    }
+    const cells = this.blocks.slice();
+    if (cells[cells.length - 1].isEmpty()) cells.pop();
+    return 'piecewise(' + cells.map((cell) => cell.text()).join(',') + ')';
   }
 }
 
-/**
- * Square-bracketed matrix. Enter adds a row below, Shift-Enter a column to the
- * right, Backspace in an empty row/column removes it.
- */
+/** Square-bracketed matrix. */
 class Matrix extends ArrayEnvironment {
   constructor() {
-    super('bmatrix', { [L]: '[', [R]: ']' }, 2, 2);
+    super('bmatrix', { [L]: '[', [R]: ']' }, 2, 2, false);
   }
 
   text() {
@@ -2103,57 +2104,6 @@ class Matrix extends ArrayEnvironment {
         .join('') +
       ']'
     );
-  }
-
-  cellKeystroke(cell: MathBlock, key: string, ctrlr: Controller) {
-    if (key !== 'Enter' && key !== 'Shift-Enter') return false;
-    const cursor = ctrlr.notify('edit').cursor;
-    const i = this.blocks.indexOf(cell);
-    const r = Math.floor(i / this.colCount);
-    const c = i % this.colCount;
-    if (key === 'Enter') this.insertRow(r + 1);
-    else this.insertColumn(c + 1);
-    const target =
-      key === 'Enter'
-        ? this.blocks[(r + 1) * this.colCount + c]
-        : this.blocks[r * this.colCount + c + 1];
-    cell.blur(cursor);
-    cursor.insAtLeftEnd(target);
-    return true;
-  }
-
-  deleteOutOfCell(cell: MathBlock, dir: Direction, cursor: Cursor) {
-    const cols = this.colCount;
-    const i = this.blocks.indexOf(cell);
-    const r = Math.floor(i / cols);
-    const c = i % cols;
-    const rows = this.rows();
-    const isRowEmpty = rows[r].every((x) => x.isEmpty());
-    const isColEmpty = rows.every((cells) => cells[c].isEmpty());
-    // Lands next to the removed row/column, preferably in `dir`
-    const landIn = (index: number, side: Direction) =>
-      cursor.insAtDirEnd(side, this.blocks[index]);
-    const neighbor = cell[dir] as MathBlock | 0;
-
-    if (!neighbor && this.isEmpty()) {
-      super.deleteOutOfCell(cell, dir, cursor);
-    } else if (isRowEmpty && this.rowCount > 1) {
-      const hasRowInDir = dir === L ? r > 0 : r < this.rowCount - 1;
-      landIn(
-        (hasRowInDir ? r + dir : r - dir) * cols + c,
-        (hasRowInDir ? -dir : dir) as Direction
-      );
-      this.removeRow(r);
-    } else if (isColEmpty && cols > 1) {
-      const hasColInDir = dir === L ? c > 0 : c < cols - 1;
-      landIn(
-        i + (hasColInDir ? dir : -dir),
-        (hasColInDir ? -dir : dir) as Direction
-      );
-      this.removeColumn(c);
-    } else if (neighbor) {
-      cursor.insAtDirEnd(-dir as Direction, neighbor);
-    }
   }
 }
 
