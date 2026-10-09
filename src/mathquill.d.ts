@@ -36,6 +36,7 @@ declare namespace MathQuill {
         startIndex: number;
         endIndex: number;
       };
+      select: () => BaseMathQuill;
 
       //chainable methods
       config(opts: Config): this;
@@ -56,6 +57,7 @@ declare namespace MathQuill {
       keystroke: (key: string, evt?: KeyboardEvent) => EditableMathQuill;
       typedText: (text: string) => EditableMathQuill;
       clearSelection: () => EditableMathQuill;
+      deleteSelection: () => EditableMathQuill;
       getAriaPostLabel: () => string;
       setAriaPostLabel: (str: string, timeout?: number) => EditableMathQuill;
       ignoreNextMousedown: (func: () => boolean) => EditableMathQuill;

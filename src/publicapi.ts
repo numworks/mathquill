@@ -316,6 +316,11 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
     getAriaLabel() {
       return this.__controller.getAriaLabel();
     }
+    // Also available on static fields
+    select() {
+      this.__controller.selectAll();
+      return this;
+    }
     config(opts: ConfigOptions) {
       config(this.__options, opts);
       return this;
@@ -382,8 +387,9 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
       this.__controller.editablesTextareaEvents();
       return this;
     }
-    select() {
-      this.__controller.selectAll();
+    deleteSelection() {
+      this.__controller.cursor.deleteSelection();
+      this.__controller.handle('edit');
       return this;
     }
     clearSelection() {
