@@ -1,8 +1,8 @@
 .mq-editable-field {
   .inline-block;
   .mq-cursor {
-    border-left: 1px solid currentColor;
-    margin-left: -1px;
+    border-left: @px solid currentColor;
+    margin-left: -@px;
     position: relative;
     z-index: 1;
     padding: 0;
@@ -17,16 +17,17 @@
   // TODO: figure out a better way.
   &,
   .mq-math-mode & {
-    border: 1px solid gray;
+    border: @px solid gray;
 
     &.mq-focused {
-      .box-shadow(~'#8bd 0 0 1px 2px, inset #6ae 0 0 2px 0');
+      @px2: (2 * @px);
+      .box-shadow(~'#8bd 0 0 @{px} @{px2}, inset #6ae 0 0 @{px2} 0');
       border-color: #709ac0;
     }
   }
   // special styles for editables within static math
   .mq-math-mode & {
-    margin: 1px;
+    margin: @px;
   }
 
   ////
@@ -34,10 +35,10 @@
   .mq-latex-command-input {
     color: inherit;
     font-family: @mono;
-    border: 1px solid gray;
-    padding-right: 1px;
-    margin-right: 1px;
-    margin-left: 2px;
+    border: @px solid gray;
+    padding-right: @px;
+    margin-right: @px;
+    margin-left: (2 * @px);
 
     &.mq-empty {
       background: transparent;

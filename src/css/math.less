@@ -10,7 +10,7 @@
 .mq-math-mode .mq-root-block {
   .inline-block;
   width: 100%;
-  padding: 2px;
+  padding: (2 * @px);
   .box-sizing(border-box); // supported by IE8+: http://caniuse.com/css3-boxsizing
   white-space: nowrap;
   overflow: hidden;
@@ -211,12 +211,12 @@
   }
 
   .mq-overline {
-    border-top: 1px solid;
-    margin-top: 1px;
+    border-top: @px solid;
+    margin-top: @px;
   }
   .mq-underline {
-    border-bottom: 1px solid;
-    margin-bottom: 1px;
+    border-bottom: @px solid;
+    margin-bottom: @px;
   }
 
   ////
@@ -291,7 +291,7 @@
   .mq-bracket-r {
     position: absolute;
     top: 0;
-    bottom: 2px;
+    bottom: (2 * @px);
   }
   .mq-bracket-l {
     left: 0;
@@ -368,7 +368,7 @@
   }
 
   .mq-denominator {
-    border-top: 1px solid;
+    border-top: @px solid;
     float: right; // take out of normal flow to manipulate baseline
     width: 100%;
     padding: 0.1em;
@@ -384,7 +384,7 @@
   // square roots
   .mq-sqrt-prefix {
     position: absolute;
-    top: 1px;
+    top: @px;
     bottom: 0.15em;
     width: 0.95em;
   }
@@ -394,13 +394,13 @@
   }
 
   .mq-sqrt-stem {
-    border-top: 1px solid;
-    margin-top: 1px;
+    border-top: @px solid;
+    margin-top: @px;
     margin-left: 0.9em;
     padding-left: 0.15em;
     padding-right: 0.2em;
     margin-right: 0.1em;
-    padding-top: 1px;
+    padding-top: @px;
   }
 
   .mq-diacritic-above {
@@ -456,21 +456,21 @@
   }
 
   .mq-overarc {
-    border-top: 1px solid;
+    border-top: @px solid;
     -webkit-border-top-right-radius: 50% 0.3em;
     -moz-border-radius-topright: 50% 0.3em;
     border-top-right-radius: 50% 0.3em;
     -webkit-border-top-left-radius: 50% 0.3em;
     -moz-border-radius-topleft: 50% 0.3em;
     border-top-left-radius: 50% 0.3em;
-    margin-top: 1px;
+    margin-top: @px;
     padding-top: 0.15em;
   }
 
   .mq-overarrow {
     min-width: 0.5em;
-    border-top: 1px solid;
-    margin-top: 1px;
+    border-top: @px solid;
+    margin-top: @px;
     padding-top: 0.2em;
     text-align: center;
     position: relative;

@@ -21,6 +21,8 @@ declare namespace MathQuill {
 
     interface BaseMathQuill {
       id: number;
+      __controller: any;
+      innerFields?: EditableMathQuill[];
       data: { [key: string]: any };
       revert: () => HTMLElement;
       reflow: () => void;
@@ -46,6 +48,7 @@ declare namespace MathQuill {
 
     interface EditableMathQuill extends BaseMathQuill {
       select: () => EditableMathQuill;
+      moveToDirEnd: (dir: Direction) => EditableMathQuill;
       moveToRightEnd: () => EditableMathQuill;
       moveToLeftEnd: () => EditableMathQuill;
       cmd: (latex: string) => EditableMathQuill;
