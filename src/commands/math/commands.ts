@@ -1750,6 +1750,346 @@ LatexCmds.choose = class extends Binomial {
   }
 };
 
+type ArrayDelims = {
+  [L]?: keyof typeof SVG_SYMBOLS;
+  [R]?: keyof typeof SVG_SYMBOLS;
+};
+
+/**
+ * LaTeX array environment: \begin{env} a & b \\ c & d \end{env}.
+ * Cells are the command's blocks, in row-major order.
+ */
+class ArrayEnvironment extends MathCommand {
+  blocks: MathBlock[];
+  gridEl: HTMLElement;
+
+  constructor(
+    public env: string,
+    public delims: ArrayDelims,
+    public rowCount: number,
+    public colCount: number
+  ) {
+    super('\\begin{' + env + '}');
+    this.ariaLabel = env;
+  }
+
+  numBlocks() {
+    return this.rowCount * this.colCount;
+  }
+
+  html() {
+    const [left, right] = [this.delims[L], this.delims[R]].map(
+      (symbol) => symbol && SVG_SYMBOLS[symbol]
+    );
+    this.domView = new DOMView(this.numBlocks(), (blocks) => {
+      this.gridEl = h(
+        'span',
+        { class: 'mq-array mq-non-leaf mq-grid' },
+        blocks.map((block) => h.block('span', {}, block))
+      );
+      this.updateGridColumns();
+      const children = [
+        h(
+          'span',
+          {
+            style:
+              'margin-left:' +
+              (left ? left.width : 0) +
+              ';margin-right:' +
+              (right ? right.width : 0),
+            class: 'mq-non-leaf mq-bracket-middle'
+          },
+          [this.gridEl]
+        )
+      ];
+      if (left) {
+        children.unshift(
+          h(
+            'span',
+            {
+              style: 'width:' + left.width,
+              class: 'mq-paren mq-bracket-l mq-scaled'
+            },
+            [left.html()]
+          )
+        );
+      }
+      if (right) {
+        children.push(
+          h(
+            'span',
+            {
+              style: 'width:' + right.width,
+              class: 'mq-paren mq-bracket-r mq-scaled'
+            },
+            [right.html()]
+          )
+        );
+      }
+      return h(
+        'span',
+        { class: 'mq-non-leaf mq-bracket-container mq-' + this.env },
+        children
+      );
+    });
+    return super.html();
+  }
+
+  updateGridColumns() {
+    this.gridEl.style.gridTemplateColumns =
+      'repeat(' + this.colCount + ', auto)';
+  }
+
+  /** Parses what follows \begin{env}. Ragged rows are padded with empty cells. */
+  bodyParser(): Parser<MQNode> {
+    const { string, regex, optWhitespace } = Parser;
+    // In cases, `&` stays a symbol: there is a single column
+    const isSingleColumn = this.env === 'cases';
+    const cell: Parser<MathBlock> = isSingleColumn
+      ? latexMathParser
+      : optWhitespace
+          .then(regex(/^(?!&)/))
+          .then(latexMathParser.block)
+          .many()
+          .map((blocks) => {
+            const cell = new MathBlock();
+            blocks.forEach((block) =>
+              block.children().adopt(cell, cell.getEnd(R), 0)
+            );
+            return cell;
+          })
+          .skip(optWhitespace);
+    const separatedBy = <T>(item: Parser<T>, separator: Parser<unknown>) =>
+      item.then((first) =>
+        separator
+          .then(item)
+          .many()
+          .map((rest) => [first].concat(rest))
+      );
+    const row = isSingleColumn
+      ? cell.map((c) => [c])
+      : separatedBy(cell, string('&'));
+
+    return separatedBy(row, optWhitespace.then(string('\\\\')))
+      .skip(optWhitespace)
+      .skip(string('\\end{' + this.env + '}'))
+      .map((rows) => {
+        const colCount = Math.max(...rows.map((cells) => cells.length));
+        this.rowCount = rows.length;
+        this.colCount = colCount;
+        rows.forEach((cells) => {
+          for (let c = 0; c < colCount; c += 1) {
+            (cells[c] || new MathBlock()).adopt(this, this.getEnd(R), 0);
+          }
+        });
+        this.relink();
+        return this;
+      });
+  }
+
+  parser(): Parser<MQNode | Fragment> {
+    return Parser.fail('use \\begin{' + this.env + '}');
+  }
+
+  latexRecursive(ctx: LatexContext) {
+    this.checkCursorContextOpen(ctx);
+    ctx.latex += '\\begin{' + this.env + '}';
+    this.blocks.forEach((cell, i) => {
+      if (i > 0) ctx.latex += i % this.colCount ? '&' : '\\\\';
+      cell.latexRecursive(ctx);
+    });
+    ctx.latex += '\\end{' + this.env + '}';
+    this.checkCursorContextClose(ctx);
+  }
+
+  rows() {
+    const rows: MathBlock[][] = [];
+    for (let r = 0; r < this.rowCount; r += 1) {
+      rows.push(this.blocks.slice(r * this.colCount, (r + 1) * this.colCount));
+    }
+    return rows;
+  }
+
+  mathspeak() {
+    return (
+      'Start' +
+      this.env +
+      ', ' +
+      this.rows()
+        .map((cells) => cells.map((cell) => cell.mathspeak()).join(', '))
+        .join(', NextRow, ') +
+      ', End' +
+      this.env
+    );
+  }
+
+  finalizeTree() {
+    this.eachChild((cell) => {
+      this.setupCell(cell as MathBlock);
+      return undefined;
+    });
+    this.relink();
+  }
+
+  /** Keeps `blocks` and up/down navigation in sync with the children. */
+  relink() {
+    const cells: MathBlock[] = [];
+    this.eachChild((cell) => {
+      cells.push(cell as MathBlock);
+      return undefined;
+    });
+    const cols = this.colCount;
+    cells.forEach((cell, i) => {
+      cell.upOutOf = cells[i - cols];
+      cell.downOutOf = cells[i + cols];
+      cell.ariaLabel =
+        cols > 1
+          ? 'row ' + (Math.floor(i / cols) + 1) + ' column ' + ((i % cols) + 1)
+          : 'row ' + (i + 1);
+    });
+    this.blocks = cells;
+    this.rowCount = cells.length / cols;
+  }
+
+  setupCell(cell: MathBlock) {
+    const cmd = this;
+    cell.keystroke = function (
+      key: string,
+      e: KeyboardEvent | undefined,
+      ctrlr: Controller
+    ) {
+      if (cmd.cellKeystroke(this, key, ctrlr)) {
+        e?.preventDefault();
+        this.bubble((node) => {
+          node.reflow();
+          return undefined;
+        });
+        return;
+      }
+      return MathBlock.prototype.keystroke.call(this, key, e, ctrlr);
+    };
+    cell.deleteOutOf = function (dir: Direction, cursor: Cursor) {
+      cmd.deleteOutOfCell(this, dir, cursor);
+    };
+  }
+
+  /** Returns true if the key was handled. */
+  cellKeystroke(_cell: MathBlock, _key: string, _ctrlr: Controller) {
+    return false;
+  }
+
+  deleteOutOfCell(cell: MathBlock, dir: Direction, cursor: Cursor) {
+    MathBlock.prototype.deleteOutOf.call(cell, dir, cursor);
+  }
+
+  /** Inserts an empty cell right of `leftCell` (0 for first position). */
+  insertCell(leftCell: MathBlock | 0) {
+    const cell = new MathBlock();
+    cell.adopt(this, leftCell, leftCell ? leftCell[R] : this.getEnd(L));
+    const cellEl = h.block('span', {}, cell);
+    if (leftCell) domFrag(cellEl).insertAfter(leftCell.domFrag());
+    else domFrag(cellEl).prependTo(this.gridEl);
+    this.setupCell(cell);
+    cell.domFrag().addClass('mq-empty');
+    return cell;
+  }
+
+  insertRow(rowIndex: number) {
+    let left: MathBlock | 0 = this.blocks[rowIndex * this.colCount - 1] || 0;
+    for (let c = 0; c < this.colCount; c += 1) left = this.insertCell(left);
+    this.relink();
+  }
+
+  removeRow(rowIndex: number) {
+    this.rows()[rowIndex].forEach((cell) => cell.remove());
+    this.relink();
+  }
+
+  /** Moves the content of `from` at the end of `to`, and the cursor at the junction. */
+  moveContent(from: MathBlock, to: MathBlock, cursor: Cursor) {
+    const first = from.getEnd(L);
+    if (first) {
+      const moved = new Fragment(first, from.getEnd(R));
+      const movedDom = moved.domFrag();
+      moved.disown().adopt(to, to.getEnd(R), 0);
+      movedDom.appendTo(to.domFrag().oneElement());
+      cursor.insLeftOf(first);
+    } else {
+      cursor.insAtRightEnd(to);
+    }
+  }
+}
+
+/**
+ * Left-braced rows, for piecewise functions and systems of equations.
+ * Rows behave like text lines: Enter splits, Backspace/Delete merge.
+ */
+class Cases extends ArrayEnvironment {
+  constructor() {
+    super('cases', { [L]: '{' }, 2, 1);
+  }
+
+  text() {
+    return 'cases(' + this.blocks.map((row) => row.text()).join(',') + ')';
+  }
+
+  cellKeystroke(row: MathBlock, key: string, ctrlr: Controller) {
+    if (key !== 'Enter') return false;
+    const cursor = ctrlr.notify('edit').cursor;
+    const rowIndex = this.blocks.indexOf(row);
+    this.insertRow(rowIndex + 1);
+    const newRow = this.blocks[rowIndex + 1];
+    const right = cursor[R];
+    if (right) {
+      const moved = new Fragment(right, row.getEnd(R));
+      const movedDom = moved.domFrag();
+      moved.disown().adopt(newRow, 0, 0);
+      movedDom.appendTo(newRow.domFrag().oneElement());
+    }
+    row.blur(cursor);
+    cursor.insAtLeftEnd(newRow);
+    return true;
+  }
+
+  deleteOutOfCell(row: MathBlock, dir: Direction, cursor: Cursor) {
+    const neighbor = row[dir] as MathBlock | 0;
+    const other = row[-dir as Direction] as MathBlock | 0;
+    if (neighbor) {
+      const upper = dir === L ? neighbor : row;
+      const lower = dir === L ? row : neighbor;
+      this.moveContent(lower, upper, cursor);
+      this.removeRow(this.blocks.indexOf(lower));
+    } else if (row.isEmpty() && other) {
+      cursor.insAtDirEnd(dir, other);
+      this.removeRow(this.blocks.indexOf(row));
+    } else {
+      super.deleteOutOfCell(row, dir, cursor);
+    }
+  }
+}
+
+const ARRAY_ENVIRONMENTS: Record<string, new () => ArrayEnvironment> = {
+  cases: Cases
+};
+
+// When typed, \begin inserts a cases block. When parsed, it reads the environment name.
+LatexCmds.begin = () => {
+  const node = new Cases();
+  node.parser = () =>
+    Parser.optWhitespace
+      .then(Parser.string('{'))
+      .then(Parser.regex(/^[a-z]+/i))
+      .skip(Parser.string('}'))
+      .then((env) => {
+        const Environment = ARRAY_ENVIRONMENTS[env];
+        return Environment
+          ? new Environment().bodyParser()
+          : Parser.fail('unknown environment ' + env);
+      });
+  return node;
+};
+LatexCmds.cases = Cases;
+
 class MathFieldNode extends MathCommand {
   name: string;
   ctrlSeq = '\\MathQuillMathField';

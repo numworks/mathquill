@@ -312,6 +312,24 @@
     display: block;
   }
 
+  // array environments (cases, matrices)
+  .mq-grid {
+    display: inline-grid;
+    column-gap: 0.8em;
+    justify-items: center;
+    align-items: baseline;
+    padding: 0 0.2em;
+  }
+
+  .mq-grid > span {
+    padding: 0.1em 0;
+  }
+
+  .mq-cases .mq-grid {
+    justify-items: start;
+    padding-right: 0;
+  }
+
   ////
   // non-italicized operator names
   // like \sin, \cos, \ln, etc.
