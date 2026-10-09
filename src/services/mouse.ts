@@ -168,7 +168,10 @@ class Controller_mouse extends Controller_latex {
     // don't clear selection until after getting node from target, in case
     // target was selection span, otherwise target will have no parent and will
     // seek from root, which is less accurate (e.g. fraction)
-    cursor.clearSelection().show();
+    cursor.clearSelection();
+    // A static field's cursor is only used for selection: showing it would
+    // draw it when it lands inside an inner editable field
+    if (this.editable) cursor.show();
 
     node.seek(clientX, cursor);
     this.scrollHoriz(); // before .selectFrom when mouse-selecting, so
