@@ -17,14 +17,20 @@ interface InternalMathQuillInstance {
   ): IBaseMathQuill;
 }
 
-interface IBaseMathQuill extends BaseMathQuill, InternalMathQuillInstance {}
+interface IBaseMathQuill extends BaseMathQuill, InternalMathQuillInstance {
+  // Narrows the public `any` typing
+  __controller: Controller;
+}
 
 interface IBaseMathQuillClass {
   new (ctrlr: Controller): IBaseMathQuill;
   RootBlock: typeof MathBlock;
 }
 
-interface IEditableField extends EditableMathQuill, InternalMathQuillInstance {}
+interface IEditableField extends EditableMathQuill, InternalMathQuillInstance {
+  // Narrows the public `any` typing
+  __controller: Controller;
+}
 
 interface IEditableFieldClass {
   new (ctrlr: Controller): IEditableField;

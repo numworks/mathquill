@@ -19,8 +19,8 @@
 
     resize: none; // hotfix: https://code.google.com/p/chromium/issues/detail?id=355199#c1
 
-    width: 1px; // don't "stick out" invisibly from a math field,
-    height: 1px; // can affect ancestor's .scroll{Width,Height}
+    width: @px; // don't "stick out" invisibly from a math field,
+    height: @px; // can affect ancestor's .scroll{Width,Height}
 
     // Needed to fix a Safari 10 bug where box-sizing: border-box is
     // preventing text from being copied.
