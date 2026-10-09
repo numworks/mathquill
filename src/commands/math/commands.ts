@@ -1750,6 +1750,497 @@ LatexCmds.choose = class extends Binomial {
   }
 };
 
+type ArrayDelims = {
+  [L]?: keyof typeof SVG_SYMBOLS;
+  [R]?: keyof typeof SVG_SYMBOLS;
+};
+
+/**
+ * LaTeX array environment: \begin{env} a & b \\ c & d \end{env}.
+ * Cells are the command's blocks, in row-major order.
+ *
+ * Like NumWorks calculators, the grid ends with a placeholder row, and a
+ * placeholder column unless columns are fixed. Placeholders are only shown
+ * while editing the grid, and are not part of the LaTeX. Typing in a
+ * placeholder adds a new one, and leaving a cell removes trailing empty rows
+ * and columns.
+ */
+class ArrayEnvironment extends MathCommand {
+  blocks: MathBlock[];
+  gridEl: HTMLElement | undefined;
+  // Prevents pruning while the grid is being restructured
+  private isRestructuring = false;
+
+  /** rowCount and colCount include the placeholder row and column. */
+  constructor(
+    public env: string,
+    public delims: ArrayDelims,
+    public rowCount: number,
+    public colCount: number,
+    public hasFixedColumns: boolean
+  ) {
+    super('\\begin{' + env + '}');
+    this.ariaLabel = env;
+  }
+
+  numBlocks() {
+    return this.rowCount * this.colCount;
+  }
+
+  realRowCount() {
+    return this.rowCount - 1;
+  }
+
+  realColCount() {
+    return this.colCount - (this.hasFixedColumns ? 0 : 1);
+  }
+
+  html() {
+    const [left, right] = [this.delims[L], this.delims[R]].map(
+      (symbol) => symbol && SVG_SYMBOLS[symbol]
+    );
+    this.domView = new DOMView(this.numBlocks(), (blocks) => {
+      this.gridEl = h(
+        'span',
+        { class: 'mq-array mq-non-leaf mq-grid' },
+        blocks.map((block) => h.block('span', {}, block))
+      );
+      const children = [
+        h(
+          'span',
+          {
+            style:
+              'margin-left:' +
+              (left ? left.width : 0) +
+              ';margin-right:' +
+              (right ? right.width : 0),
+            class: 'mq-non-leaf mq-bracket-middle'
+          },
+          [this.gridEl]
+        )
+      ];
+      if (left) {
+        children.unshift(
+          h(
+            'span',
+            {
+              style: 'width:' + left.width,
+              class: 'mq-paren mq-bracket-l mq-scaled'
+            },
+            [left.html()]
+          )
+        );
+      }
+      if (right) {
+        children.push(
+          h(
+            'span',
+            {
+              style: 'width:' + right.width,
+              class: 'mq-paren mq-bracket-r mq-scaled'
+            },
+            [right.html()]
+          )
+        );
+      }
+      return h(
+        'span',
+        { class: 'mq-non-leaf mq-bracket-container mq-' + this.env },
+        children
+      );
+    });
+    const html = super.html();
+    this.updateGridLayout();
+    return html;
+  }
+
+  /**
+   * Places cells explicitly, so that hidden placeholders leave the other cells
+   * in place.
+   */
+  updateGridLayout() {
+    if (!this.gridEl) return;
+    this.gridEl.style.setProperty(
+      '--mq-grid-columns',
+      String(this.realColCount())
+    );
+    this.gridEl.style.setProperty(
+      '--mq-grid-all-columns',
+      String(this.colCount)
+    );
+    const lastRow = this.realRowCount() - 1;
+    const lastCol = this.realColCount() - 1;
+    this.blocks.forEach((cell, i) => {
+      const frag = cell.domFrag();
+      if (frag.isEmpty()) return;
+      const el = frag.oneElement() as HTMLElement;
+      const r = Math.floor(i / this.colCount);
+      const c = i % this.colCount;
+      el.style.gridRow = String(r + 1);
+      el.style.gridColumn = String(c + 1);
+      frag.toggleClass('mq-grid-placeholder', r > lastRow || c > lastCol);
+      // With fixed columns (cases), the last cell is optional (no condition)
+      frag.toggleClass(
+        'mq-grid-optional',
+        this.hasFixedColumns && r === lastRow && c === lastCol
+      );
+    });
+  }
+
+  /** Parses what follows \begin{env}. Ragged rows are padded with empty cells. */
+  bodyParser(): Parser<MQNode> {
+    const { string, regex, optWhitespace } = Parser;
+    const cell = optWhitespace
+      .then(regex(/^(?!&)/))
+      .then(latexMathParser.block)
+      .many()
+      .map((blocks) => {
+        const cell = new MathBlock();
+        blocks.forEach((block) =>
+          block.children().adopt(cell, cell.getEnd(R), 0)
+        );
+        return cell;
+      })
+      .skip(optWhitespace);
+    const separatedBy = <T>(item: Parser<T>, separator: Parser<unknown>) =>
+      item.then((first) =>
+        separator
+          .then(item)
+          .many()
+          .map((rest) => [first].concat(rest))
+      );
+
+    return separatedBy(
+      separatedBy(cell, string('&')),
+      optWhitespace.then(string('\\\\'))
+    )
+      .skip(optWhitespace)
+      .skip(string('\\end{' + this.env + '}'))
+      .then((rows) => {
+        let realColCount = Math.max(...rows.map((cells) => cells.length));
+        if (this.hasFixedColumns) {
+          if (realColCount > this.colCount) {
+            return Parser.fail('too many columns in ' + this.env);
+          }
+          realColCount = this.colCount;
+        }
+        this.colCount = realColCount + (this.hasFixedColumns ? 0 : 1);
+        this.rowCount = rows.length + 1;
+        // Ragged rows and placeholders are filled with empty cells
+        rows.push([]);
+        rows.forEach((cells) => {
+          for (let c = 0; c < this.colCount; c += 1) {
+            (cells[c] || new MathBlock()).adopt(this, this.getEnd(R), 0);
+          }
+        });
+        this.relink();
+        return Parser.succeed(this);
+      });
+  }
+
+  parser(): Parser<MQNode | Fragment> {
+    return Parser.fail('use \\begin{' + this.env + '}');
+  }
+
+  latexRecursive(ctx: LatexContext) {
+    this.checkCursorContextOpen(ctx);
+    ctx.latex += '\\begin{' + this.env + '}';
+    this.realRows().forEach((cells, r) => {
+      if (r > 0) ctx.latex += '\\\\';
+      cells.forEach((cell, c) => {
+        if (c > 0) ctx.latex += '&';
+        cell.latexRecursive(ctx);
+      });
+    });
+    ctx.latex += '\\end{' + this.env + '}';
+    this.checkCursorContextClose(ctx);
+  }
+
+  rows() {
+    const rows: MathBlock[][] = [];
+    for (let r = 0; r < this.rowCount; r += 1) {
+      rows.push(this.blocks.slice(r * this.colCount, (r + 1) * this.colCount));
+    }
+    return rows;
+  }
+
+  /** Rows without placeholders. */
+  realRows() {
+    return this.rows()
+      .slice(0, this.realRowCount())
+      .map((cells) => cells.slice(0, this.realColCount()));
+  }
+
+  mathspeak() {
+    return (
+      'Start' +
+      this.env +
+      ', ' +
+      this.realRows()
+        .map((cells) => cells.map((cell) => cell.mathspeak()).join(', '))
+        .join(', NextRow, ') +
+      ', End' +
+      this.env
+    );
+  }
+
+  finalizeTree() {
+    this.eachChild((cell) => {
+      this.setupCell(cell as MathBlock);
+      return undefined;
+    });
+    this.relink();
+  }
+
+  /** Keeps `blocks`, up/down navigation and the layout in sync with the children. */
+  relink() {
+    const cells: MathBlock[] = [];
+    this.eachChild((cell) => {
+      cells.push(cell as MathBlock);
+      return undefined;
+    });
+    const cols = this.colCount;
+    cells.forEach((cell, i) => {
+      cell.upOutOf = cells[i - cols];
+      cell.downOutOf = cells[i + cols];
+      cell.ariaLabel =
+        cols > 1
+          ? 'row ' + (Math.floor(i / cols) + 1) + ' column ' + ((i % cols) + 1)
+          : 'row ' + (i + 1);
+    });
+    this.blocks = cells;
+    this.rowCount = cells.length / cols;
+    this.updateGridLayout();
+  }
+
+  /**
+   * Enters horizontally in the first row, never in a placeholder.
+   * Ignores leftRightIntoCmdGoes, which would enter the last cell.
+   */
+  moveTowards(dir: Direction, cursor: Cursor) {
+    const cell = this.blocks[dir === R ? 0 : this.realColCount() - 1];
+    cursor.insAtDirEnd(-dir as Direction, cell);
+    cursor.controller.aria
+      .queueDirEndOf(-dir as Direction)
+      .queue(cursor.parent, true);
+  }
+
+  setupCell(cell: MathBlock) {
+    const cmd = this;
+    /* Left/Right leave the grid at the ends of a row, instead of wrapping.
+     * Ignores leftRightIntoCmdGoes, which only makes sense for vertical
+     * commands like fractions. */
+    cell.moveOutOf = function (dir: Direction, cursor: Cursor) {
+      const c = cmd.blocks.indexOf(this) % cmd.colCount;
+      if (c === (dir === L ? 0 : cmd.colCount - 1)) {
+        cursor.insDirOf(dir, cmd);
+        cursor.controller.aria.queueDirOf(dir).queue(cmd);
+        return;
+      }
+      MathBlock.prototype.moveOutOf.call(this, dir, cursor);
+    };
+    cell.deleteOutOf = function (dir: Direction, cursor: Cursor) {
+      cmd.restructure(() => cmd.deleteOutOfCell(this, dir, cursor));
+    };
+    cell.blur = function (cursor: Cursor) {
+      MathBlock.prototype.blur.call(this, cursor);
+      if (cursor) cmd.removeTrailingEmptyRowsAndColumns(cursor);
+      return this;
+    };
+  }
+
+  restructure(fn: () => void) {
+    this.isRestructuring = true;
+    try {
+      fn();
+    } finally {
+      this.isRestructuring = false;
+    }
+  }
+
+  /** Called when the content changes: typing in a placeholder adds a new one. */
+  reflow() {
+    if (this.isRestructuring) return;
+    const rows = this.rows();
+    const isFilled = (cell: MathBlock) => !cell.isEmpty();
+    this.restructure(() => {
+      if (rows[rows.length - 1].some(isFilled)) this.insertRow(this.rowCount);
+      if (
+        !this.hasFixedColumns &&
+        rows.some((cells) => isFilled(cells[cells.length - 1]))
+      ) {
+        this.insertColumn(this.colCount);
+      }
+    });
+  }
+
+  /** Removes trailing empty rows and columns, except the one with the cursor. */
+  removeTrailingEmptyRowsAndColumns(cursor: Cursor) {
+    if (this.isRestructuring) return;
+    const hasCursor = (cell: MathBlock) => {
+      for (let node: MQNode | undefined = cursor.parent; node; ) {
+        if (node === cell) return true;
+        node = node.parent;
+      }
+      return false;
+    };
+    const isRemovable = (cells: MathBlock[]) =>
+      cells.every((cell) => cell.isEmpty() && !hasCursor(cell));
+    this.restructure(() => {
+      while (
+        this.realRowCount() > 1 &&
+        isRemovable(this.rows()[this.realRowCount() - 1])
+      ) {
+        this.removeRow(this.realRowCount() - 1);
+      }
+      while (
+        !this.hasFixedColumns &&
+        this.realColCount() > 1 &&
+        isRemovable(this.rows().map((cells) => cells[this.realColCount() - 1]))
+      ) {
+        this.removeColumn(this.realColCount() - 1);
+      }
+    });
+  }
+
+  /** Backspace/Delete at a cell's end: removes its empty row or column. */
+  deleteOutOfCell(cell: MathBlock, dir: Direction, cursor: Cursor) {
+    const cols = this.colCount;
+    const i = this.blocks.indexOf(cell);
+    const r = Math.floor(i / cols);
+    const c = i % cols;
+    const rows = this.rows();
+    const isRealRowEmpty =
+      r < this.realRowCount() && rows[r].every((x) => x.isEmpty());
+    const isRealColEmpty =
+      c < this.realColCount() && rows.every((cells) => cells[c].isEmpty());
+    // Lands next to the removed row/column, preferably in `dir`
+    const landIn = (index: number, side: Direction) =>
+      cursor.insAtDirEnd(side, this.blocks[index]);
+    const neighbor = cell[dir] as MathBlock | 0;
+
+    if (!neighbor && this.isEmpty()) {
+      MathBlock.prototype.deleteOutOf.call(cell, dir, cursor);
+    } else if (isRealRowEmpty && this.realRowCount() > 1) {
+      const hasRowInDir = dir === L ? r > 0 : r < this.rowCount - 1;
+      landIn(
+        (hasRowInDir ? r + dir : r - dir) * cols + c,
+        (hasRowInDir ? -dir : dir) as Direction
+      );
+      this.removeRow(r);
+    } else if (
+      !this.hasFixedColumns &&
+      isRealColEmpty &&
+      this.realColCount() > 1
+    ) {
+      const hasColInDir = dir === L ? c > 0 : c < cols - 1;
+      landIn(
+        i + (hasColInDir ? dir : -dir),
+        (hasColInDir ? -dir : dir) as Direction
+      );
+      this.removeColumn(c);
+    } else if (neighbor) {
+      cursor.insAtDirEnd(-dir as Direction, neighbor);
+    }
+  }
+
+  /** Inserts an empty cell right of `leftCell` (0 for first position). */
+  insertCell(leftCell: MathBlock | 0) {
+    const cell = new MathBlock();
+    cell.adopt(this, leftCell, leftCell ? leftCell[R] : this.getEnd(L));
+    const cellEl = h.block('span', {}, cell);
+    if (leftCell) domFrag(cellEl).insertAfter(leftCell.domFrag());
+    else if (this.gridEl) domFrag(cellEl).prependTo(this.gridEl);
+    this.setupCell(cell);
+    cell.domFrag().addClass('mq-empty');
+    return cell;
+  }
+
+  insertRow(rowIndex: number) {
+    let left: MathBlock | 0 = this.blocks[rowIndex * this.colCount - 1] || 0;
+    for (let c = 0; c < this.colCount; c += 1) left = this.insertCell(left);
+    this.relink();
+  }
+
+  insertColumn(colIndex: number) {
+    this.rows().forEach((cells) =>
+      this.insertCell(
+        colIndex > 0 ? cells[colIndex - 1] : (cells[0][L] as MathBlock | 0)
+      )
+    );
+    this.colCount += 1;
+    this.relink();
+  }
+
+  removeRow(rowIndex: number) {
+    this.rows()[rowIndex].forEach((cell) => cell.remove());
+    this.relink();
+  }
+
+  removeColumn(colIndex: number) {
+    this.rows().forEach((cells) => cells[colIndex].remove());
+    this.colCount -= 1;
+    this.relink();
+  }
+}
+
+/**
+ * Left-braced rows of a value and a condition, for piecewise functions.
+ * The condition of the last row is optional.
+ */
+class Cases extends ArrayEnvironment {
+  constructor() {
+    super('cases', { [L]: '{' }, 2, 2, true);
+  }
+
+  text() {
+    const cells = ([] as MathBlock[]).concat(...this.realRows());
+    if (cells[cells.length - 1].isEmpty()) cells.pop();
+    return 'piecewise(' + cells.map((cell) => cell.text()).join(',') + ')';
+  }
+}
+
+/** Square-bracketed matrix. */
+class Matrix extends ArrayEnvironment {
+  constructor() {
+    super('bmatrix', { [L]: '[', [R]: ']' }, 2, 2, false);
+  }
+
+  text() {
+    return (
+      '[' +
+      this.realRows()
+        .map((cells) => '[' + cells.map((cell) => cell.text()).join(',') + ']')
+        .join('') +
+      ']'
+    );
+  }
+}
+
+const ARRAY_ENVIRONMENTS: Record<string, new () => ArrayEnvironment> = {
+  cases: Cases,
+  bmatrix: Matrix
+};
+
+// When typed, \begin inserts a cases block. When parsed, it reads the environment name.
+LatexCmds.begin = () => {
+  const node = new Cases();
+  node.parser = () =>
+    Parser.optWhitespace
+      .then(Parser.string('{'))
+      .then(Parser.regex(/^[a-z]+/i))
+      .skip(Parser.string('}'))
+      .then((env) => {
+        const Environment = ARRAY_ENVIRONMENTS[env];
+        return Environment
+          ? new Environment().bodyParser()
+          : Parser.fail('unknown environment ' + env);
+      });
+  return node;
+};
+LatexCmds.cases = Cases;
+LatexCmds.bmatrix = LatexCmds.matrix = Matrix;
+
 class MathFieldNode extends MathCommand {
   name: string;
   ctrlSeq = '\\MathQuillMathField';
