@@ -313,8 +313,10 @@
   }
 
   // array environments (cases, matrices)
+  // Placeholder cells are only shown while editing, see ArrayEnvironment
   .mq-grid {
     display: inline-grid;
+    grid-template-columns: repeat(var(--mq-grid-columns), auto);
     column-gap: 0.8em;
     justify-items: center;
     align-items: baseline;
@@ -323,6 +325,22 @@
 
   .mq-grid > span {
     padding: 0.1em 0;
+  }
+
+  .mq-grid:has(.mq-hasCursor) {
+    grid-template-columns: repeat(var(--mq-grid-all-columns), auto);
+  }
+
+  .mq-grid:not(:has(.mq-hasCursor)) > .mq-grid-placeholder {
+    display: none;
+  }
+
+  .mq-grid:not(:has(.mq-hasCursor)) > .mq-grid-optional.mq-empty {
+    visibility: hidden;
+  }
+
+  .mq-grid > .mq-grid-placeholder.mq-empty {
+    opacity: 0.5;
   }
 
   .mq-cases .mq-grid {
