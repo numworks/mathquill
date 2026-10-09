@@ -2000,8 +2000,26 @@ class ArrayEnvironment extends MathCommand {
     this.relink();
   }
 
+  insertColumn(colIndex: number) {
+    this.rows().forEach((cells) =>
+      this.insertCell(
+        colIndex > 0 ? cells[colIndex - 1] : (cells[0][L] as MathBlock | 0)
+      )
+    );
+    this.colCount += 1;
+    this.updateGridColumns();
+    this.relink();
+  }
+
   removeRow(rowIndex: number) {
     this.rows()[rowIndex].forEach((cell) => cell.remove());
+    this.relink();
+  }
+
+  removeColumn(colIndex: number) {
+    this.rows().forEach((cells) => cells[colIndex].remove());
+    this.colCount -= 1;
+    this.updateGridColumns();
     this.relink();
   }
 
@@ -2068,8 +2086,80 @@ class Cases extends ArrayEnvironment {
   }
 }
 
+/**
+ * Square-bracketed matrix. Enter adds a row below, Shift-Enter a column to the
+ * right, Backspace in an empty row/column removes it.
+ */
+class Matrix extends ArrayEnvironment {
+  constructor() {
+    super('bmatrix', { [L]: '[', [R]: ']' }, 2, 2);
+  }
+
+  text() {
+    return (
+      '[' +
+      this.rows()
+        .map((cells) => '[' + cells.map((cell) => cell.text()).join(',') + ']')
+        .join('') +
+      ']'
+    );
+  }
+
+  cellKeystroke(cell: MathBlock, key: string, ctrlr: Controller) {
+    if (key !== 'Enter' && key !== 'Shift-Enter') return false;
+    const cursor = ctrlr.notify('edit').cursor;
+    const i = this.blocks.indexOf(cell);
+    const r = Math.floor(i / this.colCount);
+    const c = i % this.colCount;
+    if (key === 'Enter') this.insertRow(r + 1);
+    else this.insertColumn(c + 1);
+    const target =
+      key === 'Enter'
+        ? this.blocks[(r + 1) * this.colCount + c]
+        : this.blocks[r * this.colCount + c + 1];
+    cell.blur(cursor);
+    cursor.insAtLeftEnd(target);
+    return true;
+  }
+
+  deleteOutOfCell(cell: MathBlock, dir: Direction, cursor: Cursor) {
+    const cols = this.colCount;
+    const i = this.blocks.indexOf(cell);
+    const r = Math.floor(i / cols);
+    const c = i % cols;
+    const rows = this.rows();
+    const isRowEmpty = rows[r].every((x) => x.isEmpty());
+    const isColEmpty = rows.every((cells) => cells[c].isEmpty());
+    // Lands next to the removed row/column, preferably in `dir`
+    const landIn = (index: number, side: Direction) =>
+      cursor.insAtDirEnd(side, this.blocks[index]);
+    const neighbor = cell[dir] as MathBlock | 0;
+
+    if (!neighbor && this.isEmpty()) {
+      super.deleteOutOfCell(cell, dir, cursor);
+    } else if (isRowEmpty && this.rowCount > 1) {
+      const hasRowInDir = dir === L ? r > 0 : r < this.rowCount - 1;
+      landIn(
+        (hasRowInDir ? r + dir : r - dir) * cols + c,
+        (hasRowInDir ? -dir : dir) as Direction
+      );
+      this.removeRow(r);
+    } else if (isColEmpty && cols > 1) {
+      const hasColInDir = dir === L ? c > 0 : c < cols - 1;
+      landIn(
+        i + (hasColInDir ? dir : -dir),
+        (hasColInDir ? -dir : dir) as Direction
+      );
+      this.removeColumn(c);
+    } else if (neighbor) {
+      cursor.insAtDirEnd(-dir as Direction, neighbor);
+    }
+  }
+}
+
 const ARRAY_ENVIRONMENTS: Record<string, new () => ArrayEnvironment> = {
-  cases: Cases
+  cases: Cases,
+  bmatrix: Matrix
 };
 
 // When typed, \begin inserts a cases block. When parsed, it reads the environment name.
@@ -2089,6 +2179,7 @@ LatexCmds.begin = () => {
   return node;
 };
 LatexCmds.cases = Cases;
+LatexCmds.bmatrix = LatexCmds.matrix = Matrix;
 
 class MathFieldNode extends MathCommand {
   name: string;
