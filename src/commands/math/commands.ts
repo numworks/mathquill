@@ -2013,9 +2013,11 @@ class ArrayEnvironment extends MathCommand {
     this.updateGridLayout();
   }
 
-  /** Enters horizontally in the first row, never in a placeholder. */
-  moveTowards(dir: Direction, cursor: Cursor, updown?: 'up' | 'down') {
-    if (updown) return super.moveTowards(dir, cursor, updown);
+  /**
+   * Enters horizontally in the first row, never in a placeholder.
+   * Ignores leftRightIntoCmdGoes, which would enter the last cell.
+   */
+  moveTowards(dir: Direction, cursor: Cursor) {
     const cell = this.blocks[dir === R ? 0 : this.realColCount() - 1];
     cursor.insAtDirEnd(-dir as Direction, cell);
     cursor.controller.aria
@@ -2025,19 +2027,17 @@ class ArrayEnvironment extends MathCommand {
 
   setupCell(cell: MathBlock) {
     const cmd = this;
-    // Left/Right leave the grid at the ends of a row, instead of wrapping
-    cell.moveOutOf = function (
-      dir: Direction,
-      cursor: Cursor,
-      updown?: 'up' | 'down'
-    ) {
+    /* Left/Right leave the grid at the ends of a row, instead of wrapping.
+     * Ignores leftRightIntoCmdGoes, which only makes sense for vertical
+     * commands like fractions. */
+    cell.moveOutOf = function (dir: Direction, cursor: Cursor) {
       const c = cmd.blocks.indexOf(this) % cmd.colCount;
-      if (!updown && c === (dir === L ? 0 : cmd.colCount - 1)) {
+      if (c === (dir === L ? 0 : cmd.colCount - 1)) {
         cursor.insDirOf(dir, cmd);
         cursor.controller.aria.queueDirOf(dir).queue(cmd);
         return;
       }
-      MathBlock.prototype.moveOutOf.call(this, dir, cursor, updown);
+      MathBlock.prototype.moveOutOf.call(this, dir, cursor);
     };
     cell.deleteOutOf = function (dir: Direction, cursor: Cursor) {
       cmd.restructure(() => cmd.deleteOutOfCell(this, dir, cursor));
