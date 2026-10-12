@@ -32,9 +32,17 @@ suite('beautification', function () {
       assertTyped('+', '\\pi+');
     });
 
-    test('only substitutes word endings', function () {
+    test('splits words into commands', function () {
       assertTyped('xpi+', 'x\\pi+');
-      assertTyped('pix+', 'x\\pi+pix+');
+      assertTyped('pix+', 'x\\pi+\\pi x+');
+      assertTyped('pithetapi-', 'x\\pi+\\pi x+\\pi\\theta\\pi-');
+    });
+
+    test('keeps the cursor in the word', function () {
+      mq.typedText('pix');
+      mq.keystroke('Left');
+      mq.typedText('+');
+      assert.equal(mq.latex(), '\\pi+x');
     });
 
     test('substitutes before sup and subscripts', function () {

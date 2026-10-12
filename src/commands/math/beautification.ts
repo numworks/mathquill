@@ -46,8 +46,10 @@ baseOptionProcessors.autoFunctionTemplates = function (templates) {
 const BEAUTIFICATION_CURSOR_MARKER = '\uE000';
 
 /**
- * Substitutes the lazy auto command spelled by the letters ending at `last`,
+ * Substitutes the lazy auto commands spelled by the letters ending at `last`,
  * once the word is over (a non-letter is typed, or the cursor leaves it).
+ * The word is split from left to right into the longest commands, so that
+ * "pix" gives "\\pi x".
  */
 function beautifyLazyAutoCommand(cursor: Cursor, last: NodeRef) {
   if (
@@ -57,32 +59,41 @@ function beautifyLazyAutoCommand(cursor: Cursor, last: NodeRef) {
     return;
   }
   const lazyCmds = cursor.options.lazyAutoCommands;
-  let str = letterSequenceEndingAtNode(last, lazyCmds._maxLength || 0);
-  while (str && !lazyCmds.hasOwnProperty(str)) str = str.slice(1);
-  if (!str) return;
-
-  let first: MQNode = last;
-  for (let i = 1; i < str.length; i += 1) first = first[L] as MQNode;
-
-  // Beautifying out of the cursor position: come back afterwards
-  const previousPosition =
-    cursor[L] === last
-      ? undefined
-      : { parent: cursor.parent, right: cursor[R] };
-  if (previousPosition) cursor.insRightOf(last);
-
-  new Fragment(first, last).remove();
-  cursor[L] = first[L];
-  const cmd = LatexCmds[str];
-  const node = isMQNodeClass(cmd)
-    ? new (cmd as typeof TempSingleCharNode)(str)
-    : (cmd as (c: string) => MQNode)(str);
-  node.createLeftOf(cursor);
-
-  if (previousPosition) {
-    if (previousPosition.right) cursor.insLeftOf(previousPosition.right);
-    else cursor.insAtRightEnd(previousPosition.parent);
+  const maxLength = lazyCmds._maxLength || 0;
+  const word = letterSequenceEndingAtNode(last, Infinity);
+  const letters: MQNode[] = [];
+  for (let l: MQNode = last; letters.length < word.length; l = l[L] as MQNode) {
+    letters.unshift(l);
   }
+
+  const matches: { start: number; name: string }[] = [];
+  for (let i = 0; i < word.length; ) {
+    let len = min(maxLength, word.length - i);
+    while (len > 0 && !lazyCmds.hasOwnProperty(word.slice(i, i + len))) {
+      len -= 1;
+    }
+    if (len > 0) matches.push({ start: i, name: word.slice(i, i + len) });
+    i += max(len, 1);
+  }
+  if (!matches.length) return;
+
+  const previousPosition = { parent: cursor.parent, right: cursor[R] };
+  // Right to left, so that the start indices of the next matches stay valid
+  for (let i = matches.length - 1; i >= 0; i -= 1) {
+    const { start, name } = matches[i];
+    const first = letters[start];
+    cursor.insRightOf(letters[start + name.length - 1]);
+    new Fragment(first, cursor[L] as MQNode).remove();
+    cursor[L] = first[L];
+    const cmd = LatexCmds[name];
+    const node = isMQNodeClass(cmd)
+      ? new (cmd as typeof TempSingleCharNode)(name)
+      : (cmd as (c: string) => MQNode)(name);
+    node.createLeftOf(cursor);
+  }
+
+  if (previousPosition.right) cursor.insLeftOf(previousPosition.right);
+  else cursor.insAtRightEnd(previousPosition.parent);
 }
 
 /** Ends the words left behind when the cursor leaves `previousParent`. */
