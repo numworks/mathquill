@@ -221,4 +221,18 @@ suite('SupSub', function () {
       assert.equal(mq.latex(), 'x_{2.3}+1');
     });
   });
+
+  test('superscript is raised above a tall base only', function () {
+    function supMargin() {
+      return mq.el().querySelector('.mq-sup').style.marginBottom;
+    }
+    mq.latex('x^{2}');
+    assert.equal(supMargin(), '');
+    mq.latex('\\left(\\frac{1}{2}\\right)^{2}');
+    assert.ok(supMargin() !== '');
+    // Shrinking the base lowers the superscript back
+    mq.moveToLeftEnd().keystroke('Right Shift-Right Backspace');
+    assert.equal(mq.latex(), '\\left(\\right)^{2}');
+    assert.equal(supMargin(), '');
+  });
 });

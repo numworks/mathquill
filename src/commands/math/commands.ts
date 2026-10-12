@@ -345,6 +345,9 @@ function getCtrlSeqsFromBlock(block: NodeRef): string {
 
 Options.prototype.charsThatBreakOutOfSupSub = '';
 
+// In units of the superscript font size
+const SUP_BASE_OVERLAP = 0.75;
+
 class SupSub extends MathCommand {
   ctrlSeq = '_{...}^{...}';
   sub?: MathBlock;
@@ -461,6 +464,32 @@ class SupSub extends MathCommand {
       }
       MathBlock.prototype.write.call(this, cursor, ch);
     };
+  }
+  /* Raises the superscript of a tall base, e.g. a parenthesis, so that it
+   * overlaps the top of the base by a fixed amount. */
+  reflow() {
+    super.reflow();
+    const base = this[L];
+    const sup = this.sup;
+    if (!sup) return;
+    const supEl = sup.domFrag().oneElement() as HTMLElement;
+    supEl.style.marginBottom = '';
+    if (!base) return;
+    const baseRect = getBoundingClientRect(
+      base.domFrag().oneElement() as HTMLElement
+    );
+    // Detached or hidden
+    if (!baseRect.height) return;
+    const supRect = getBoundingClientRect(supEl);
+    const fontSize = parseFloat(getComputedStyle(supEl).fontSize);
+    const raise = supRect.bottom - baseRect.top - SUP_BASE_OVERLAP * fontSize;
+    if (raise > 0) supEl.style.marginBottom = raise / fontSize + 'em';
+  }
+  siblingCreated(_opts: CursorOptions, dir: Direction) {
+    if (dir === L) this.reflow();
+  }
+  siblingDeleted(_opts: CursorOptions, dir: Direction) {
+    if (dir === L) this.reflow();
   }
   moveTowards(dir: Direction, cursor: Cursor, updown?: 'up' | 'down') {
     if (cursor.options.autoSubscriptNumerals && !this.sup) {

@@ -117,6 +117,12 @@ class MathCommand extends MathElement {
     if (textTemplate) this.textTemplate = textTemplate;
   }
 
+  reflow() {
+    // A superscript is positioned against its base, i.e. its left sibling
+    const next = this[R];
+    if (next instanceof SupSub) next.reflow();
+  }
+
   // obvious methods
   replaces(replacedFragment: Fragment) {
     replacedFragment.disown();
