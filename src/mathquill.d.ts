@@ -110,6 +110,7 @@ declare namespace MathQuill {
       supSubsRequireOperand?: boolean;
       spaceBehavesLikeTab?: boolean;
       typingAsteriskWritesTimesSymbol?: boolean;
+      typingExclamationEqualsWritesNotEqual?: boolean;
       typingSlashWritesDivisionSymbol?: boolean;
       typingPercentWritesPercentOf?: boolean;
       resetCursorOnBlur?: boolean | undefined;
@@ -129,12 +130,22 @@ declare namespace MathQuill {
       infixOperatorNames?: string;
       prefixOperatorNames?: string;
       autoCommands?: string;
+      lazyAutoCommands?: string;
+      autoFunctionTemplates?: {
+        [name: string]: string | AutoFunctionTemplate;
+      };
       logAriaAlerts?: boolean;
       autoParenthesizedFunctions?: string;
       quietEmptyDelimiters?: string;
       disableAutoSubstitutionInSubscripts?: boolean | { except: string };
       interpretTildeAsSim?: boolean;
       handlers?: HandlerOptions<BaseMathQuill<$>>;
+    }
+
+    interface AutoFunctionTemplate {
+      latex: string;
+      defaults?: string[];
+      minArguments?: number;
     }
 
     interface Handler<MQClass> {

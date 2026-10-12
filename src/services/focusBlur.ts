@@ -56,6 +56,11 @@ class Controller_focusBlur extends Controller_exportText {
       this.textareaSelectionTimeout = 0;
     }
     this.disableGroupingForSeconds(0);
+    // Synchronous, so that edit handlers run before focusout listeners
+    const cursor = this.cursor;
+    if (!cursor.selection && !(cursor[R] instanceof Letter)) {
+      beautifyLazyAutoCommand(cursor, cursor[L]);
+    }
     this.blurred = true;
     this.blurTimeout = setTimeout(() => {
       // wait for blur on window; if

@@ -640,7 +640,9 @@ class MathBlock extends MathElement {
     var cmd = this.chToCmd(ch, cursor.options);
     if (cursor.selection) cmd.replaces(cursor.replaceSelection());
     if (!cursor.isTooDeep()) {
+      if (!(cmd instanceof Letter)) beautifyLazyAutoCommand(cursor, cursor[L]);
       cmd.createLeftOf(cursor.show());
+      if (ch === '(' || ch === ',') beautifyAutoFunction(cursor);
       // special-case the slash so that fractions are voiced while typing
       if (ch === '/') {
         cursor.controller.aria.alert('over');
@@ -659,7 +661,14 @@ class MathBlock extends MathElement {
       .or(all.result<false>(false))
       .parse(latex);
 
-    if (block && !block.isEmpty() && block.prepareInsertionAt(cursor)) {
+    if (block) this.writeBlock(cursor, block);
+  }
+
+  writeBlock(cursor: Cursor, block: MathBlock) {
+    if (!block.isEmpty() && block.prepareInsertionAt(cursor)) {
+      if (!(block.getEnd(L) instanceof Letter)) {
+        beautifyLazyAutoCommand(cursor, cursor[L]);
+      }
       block
         .children()
         .adopt(cursor.parent, cursor[L] as NodeRef, cursor[R] as NodeRef); // TODO - masking undefined. should be 0

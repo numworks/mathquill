@@ -271,22 +271,28 @@ class Controller_keystroke extends Controller_focusBlur {
     if (cursor.parent === this.root) return;
 
     cursor.clearSelection();
+    var previousParent = cursor.parent;
     cursor.parent.moveOutOf(dir, cursor);
     cursor.controller.aria.alert();
-    return this.notify('move');
+    this.notify('move');
+    beautifyLeftBlock(cursor, previousParent);
+    return this;
   }
   moveDir(dir: Direction) {
     prayDirection(dir);
     var cursor = this.cursor,
       updown = cursor.options.leftRightIntoCmdGoes;
     var cursorDir = cursor[dir];
+    var previousParent = cursor.parent;
 
     if (cursor.selection) {
       cursor.insDirOf(dir, cursor.selection.getEnd(dir));
     } else if (cursorDir) cursorDir.moveTowards(dir, cursor, updown);
     else cursor.parent.moveOutOf(dir, cursor, updown);
 
-    return this.notify('move');
+    this.notify('move');
+    beautifyLeftBlock(cursor, previousParent);
+    return this;
   }
   moveLeft() {
     return this.moveDir(L);
@@ -327,6 +333,7 @@ class Controller_keystroke extends Controller_focusBlur {
       dirOutOf = 'downOutOf';
     }
 
+    var previousParent = cursor.parent;
     var cursorL = cursor[L];
     var cursorR = cursor[R];
     var cursorR_dirInto = cursorR && cursorR[dirInto];
@@ -347,6 +354,7 @@ class Controller_keystroke extends Controller_focusBlur {
         return undefined;
       });
     }
+    beautifyLeftBlock(cursor, previousParent);
     return self;
   }
   deleteDir(dir: Direction) {

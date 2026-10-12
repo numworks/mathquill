@@ -60,6 +60,8 @@ var EMBEDS: Record<string, (data: EmbedOptionsData) => EmbedOptions> = {};
 const processedOptions = {
   handlers: true,
   autoCommands: true,
+  lazyAutoCommands: true,
+  autoFunctionTemplates: true,
   quietEmptyDelimiters: true,
   autoParenthesizedFunctions: true,
   autoOperatorNames: true,
@@ -107,6 +109,7 @@ class Options {
   supSubsRequireOperand?: boolean;
   spaceBehavesLikeTab?: boolean;
   typingAsteriskWritesTimesSymbol?: boolean;
+  typingExclamationEqualsWritesNotEqual?: boolean;
   typingSlashWritesDivisionSymbol: boolean;
   typingPercentWritesPercentOf?: boolean;
   resetCursorOnBlur?: boolean | undefined;
@@ -127,6 +130,8 @@ class Options {
   infixOperatorNames: { [name in string]?: true };
   prefixOperatorNames: { [name in string]?: true };
   autoCommands: AutoDict;
+  lazyAutoCommands: AutoDict;
+  autoFunctionTemplates: AutoFunctionTemplates;
   autoParenthesizedFunctions: AutoDict;
   quietEmptyDelimiters: { [id: string]: any };
   disableAutoSubstitutionInSubscripts?:
@@ -428,6 +433,9 @@ function getInterface(v: number): MathQuill.v3.API | MathQuill.v1.API {
             node = klass(cmd);
           }
           if (cursor.selection) node.replaces(cursor.replaceSelection());
+          if (!(node instanceof Letter)) {
+            beautifyLazyAutoCommand(cursor, cursor[L]);
+          }
           node.createLeftOf(cursor.show());
         } /* TODO: API needs better error reporting */ else;
       } else cursor.parent.write(cursor, cmd);

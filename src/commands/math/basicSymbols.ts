@@ -1425,6 +1425,16 @@ class Equality extends BinaryOperator {
       });
       return;
     }
+    if (
+      cursor.options.typingExclamationEqualsWritesNotEqual &&
+      cursorL instanceof VanillaSymbol &&
+      cursorL.ctrlSeq === '!'
+    ) {
+      cursor[L] = cursorL[L];
+      cursorL.remove();
+      (LatexCmds as LatexCmdsSingleCharBuilder).ne('ne').createLeftOf(cursor);
+      return;
+    }
     super.createLeftOf(cursor);
   }
 }

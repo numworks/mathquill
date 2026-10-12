@@ -75,6 +75,36 @@ This takes a string formatted as a space-delimited list of LaTeX commands. Each 
 
 For example, with `autoCommands` set to `'pi theta'`, the word 'pi' automatically converts to the pi symbol and the word 'theta' automatically converts to the theta symbol.
 
+## lazyAutoCommands
+
+`lazyAutoCommands` takes the same format as [`autoCommands`](#autocommands), but the command is only rendered once the word is over: when a non-letter is typed, when the cursor leaves the block, or when the field is blurred.
+
+For example, with `lazyAutoCommands` set to `'pi'`, typing `pi+` gives `\pi+`, while typing `pix` keeps the letters `pix`.
+
+## autoFunctionTemplates
+
+`autoFunctionTemplates` maps function names to LaTeX templates, rendered when the name is typed followed by `(`. The comma-separated arguments inside the parenthesis fill the `#1`, `#2`… placeholders, and the cursor stays in the argument it was in.
+
+A template can also be an object with:
+
+- `latex`: the template
+- `defaults`: default values of empty arguments, `defaults[0]` being for `#1`. The cursor skips a defaulted argument for the next empty one.
+- `minArguments`: the number of arguments required before rendering, checked again when a `,` is typed
+
+```js
+autoFunctionTemplates: {
+  sqrt: '\\sqrt{#1}',
+  int: { latex: '\\int_{#3}^{#4}#1d#2', defaults: ['', 'x'] },
+  sum: {
+    latex: '\\sum_{#2=#3}^{#4}\\left(#1\\right)',
+    defaults: ['', 'k'],
+    minArguments: 2
+  }
+}
+```
+
+The template is not rendered if more arguments than placeholders are typed.
+
 ## autoOperatorNames
 
 `autoOperatorNames` overrides the set of operator names that automatically become non-italicized when typing the letters without typing a backslash first, like `sin`, `log`, etc.
