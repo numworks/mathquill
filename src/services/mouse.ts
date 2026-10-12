@@ -30,6 +30,12 @@ var cancelSelectionOnEdit:
   });
 })();
 
+function wordCategory(node: MQNode) {
+  if (node instanceof Digit || node.ctrlSeq === '.') return 'number';
+  if (node instanceof Letter) return 'letters';
+  return undefined;
+}
+
 class Controller_mouse extends Controller_latex {
   private handleMouseDown = (e: MouseEvent) => {
     const rootElement = closest(
@@ -123,6 +129,15 @@ class Controller_mouse extends Controller_latex {
       if (wasEdited) return;
     }
 
+    // Like native text inputs, a double click selects a word, a triple click
+    // selects the whole field
+    if (e.detail >= 2) {
+      cancelSelectionOnEdit = undefined;
+      if (e.detail === 2) ctrlr.selectWordAt(e.target as HTMLElement | null);
+      else ctrlr.selectAll();
+      return;
+    }
+
     cursor.blink = noop;
     ctrlr
       .seek(e.target as HTMLElement | null, e.clientX, e.clientY)
@@ -144,26 +159,45 @@ class Controller_mouse extends Controller_latex {
     this.container.removeEventListener('mousedown', this.handleMouseDown);
   }
 
-  seek(targetElm: Element | null, clientX: number, _clientY: number) {
-    var cursor = this.notify('select').cursor;
-    var node;
-
+  /** The MathQuill node of the target, or the root if there is none */
+  private getNodeOfTarget(targetElm: Element | null): MQNode {
     // we can click on an element that is deeply nested past the point
     // that mathquill knows about. We need to traverse up to the first
     // node that mathquill is aware of
     while (targetElm) {
       // try to find the MQ Node associated with the DOM Element
-      node = NodeBase.getNodeOfElement(targetElm);
-      if (node) break;
+      const node = NodeBase.getNodeOfElement(targetElm);
+      if (node) return node as MQNode;
 
       // must be too deep, traverse up to the parent DOM Element
       targetElm = targetElm.parentElement;
     }
+    return this.root;
+  }
 
-    // Could not find any nodes, just use the root
-    if (!node) {
-      node = this.root;
+  /* Selects the number or the run of letters under the target, or else the
+   * node under it, or the whole field when clicking on blank space. */
+  selectWordAt(targetElm: Element | null) {
+    const node = this.getNodeOfTarget(targetElm);
+    if (node instanceof MathBlock) {
+      if (node === this.root || node.isEmpty()) this.selectAll();
+      else
+        this.selectSiblings(node.getEnd(L) as MQNode, node.getEnd(R) as MQNode);
+      return;
     }
+    const category = wordCategory(node);
+    let first = node;
+    let last = node;
+    if (category) {
+      while (first[L] && wordCategory(first[L]) === category) first = first[L];
+      while (last[R] && wordCategory(last[R]) === category) last = last[R];
+    }
+    this.selectSiblings(first, last);
+  }
+
+  seek(targetElm: Element | null, clientX: number, _clientY: number) {
+    var cursor = this.notify('select').cursor;
+    var node = this.getNodeOfTarget(targetElm);
 
     // don't clear selection until after getting node from target, in case
     // target was selection span, otherwise target will have no parent and will

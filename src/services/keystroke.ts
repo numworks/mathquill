@@ -574,6 +574,15 @@ class Controller_keystroke extends Controller_focusBlur {
       while (cursor[L]) selectDir(L);
     });
   }
+  /** Selects the siblings from first to last, both included */
+  selectSiblings(first: MQNode, last: MQNode) {
+    this.notify('move');
+    const cursor = this.cursor;
+    cursor.insRightOf(last);
+    this.withIncrementalSelection((selectDir) => {
+      while (cursor[R] !== first) selectDir(L);
+    });
+  }
   selectToBlockEndInDir(dir: Direction) {
     const cursor = this.cursor;
     this.withIncrementalSelection((selectDir) => {
