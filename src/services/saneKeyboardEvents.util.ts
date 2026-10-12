@@ -150,6 +150,8 @@ var saneKeyboardEvents = (function () {
   ) {
     var keydown: KeyboardEvent | null = null;
     var keypress: KeyboardEvent | null = null;
+    // Dead keys (e.g. ^ on AZERTY) and IMEs compose text in the textarea
+    var isComposing = false;
 
     // everyTick.listen() is called after key or clipboard events to
     // say "Hey, I think something was just typed" or "pasted" etc,
@@ -281,6 +283,7 @@ var saneKeyboardEvents = (function () {
       //   reliable as our tests are comprehensive
       // If anything like #40 or #71 is reported in IE < 9, see
       // b1318e5349160b665003e36d4eedd64101ceacd8
+      if (isComposing) return;
       if (hasSelection()) return;
       if (!(textarea instanceof HTMLTextAreaElement)) return;
       var text = textarea.value;
@@ -302,16 +305,25 @@ var saneKeyboardEvents = (function () {
             (keydown.key === 'U' || keydown.key === 'Process')))
       )
         return;
-      if (text.length === 1) {
+      /* Several characters are typed at once when a composition ends, e.g.
+       * a dead ^ followed by 2 yields "^2". Otherwise, a longer text is a
+       * leftover selection. */
+      if (text.length === 1 || (text.length > 1 && !shouldBeSelected)) {
         textarea.value = '';
-        if (controller.options && controller.options.overrideTypedText) {
-          controller.options.overrideTypedText(text);
-        } else {
-          controller.typedText(text);
-        }
+        typeText(text);
       } // in Firefox, keys that don't type text, just clear seln, fire keypress
       // https://github.com/mathquill/mathquill/issues/293#issuecomment-40997668
       else maybeReselect(); // re-select if that's why we're here
+    }
+
+    function typeText(text: string) {
+      for (const ch of text) {
+        if (controller.options && controller.options.overrideTypedText) {
+          controller.options.overrideTypedText(ch);
+        } else {
+          controller.typedText(ch);
+        }
+      }
     }
 
     function maybeReselect() {
@@ -322,6 +334,7 @@ var saneKeyboardEvents = (function () {
     }
 
     function onBlur() {
+      isComposing = false;
       keydown = null;
       keypress = null;
       everyTick.clearListener();
@@ -360,6 +373,20 @@ var saneKeyboardEvents = (function () {
       everyTick.trigger(e);
     }
 
+    function onCompositionStart(e: CompositionEvent) {
+      everyTick.trigger(e);
+      isComposing = true;
+    }
+
+    function onCompositionEnd(e: CompositionEvent) {
+      everyTick.trigger(e);
+      isComposing = false;
+      if (!(textarea instanceof HTMLTextAreaElement) || e.target !== textarea)
+        return;
+      textarea.value = '';
+      typeText(e.data);
+    }
+
     if (controller.KIND_OF_MQ === 'StaticMath') {
       controller.addTextareaEventListeners({
         keydown: (evt) => {
@@ -388,7 +415,9 @@ var saneKeyboardEvents = (function () {
           everyTick.trigger();
           e.preventDefault();
         },
-        input: onInput
+        input: onInput,
+        compositionstart: onCompositionStart,
+        compositionend: onCompositionEnd
       });
     } else {
       controller.addTextareaEventListeners({
@@ -407,7 +436,9 @@ var saneKeyboardEvents = (function () {
           });
         },
         paste: onPaste,
-        input: onInput
+        input: onInput,
+        compositionstart: onCompositionStart,
+        compositionend: onCompositionEnd
       });
     }
 

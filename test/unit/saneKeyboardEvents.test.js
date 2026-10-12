@@ -160,6 +160,65 @@ suite('saneKeyboardEvents', function () {
     trigger.keypress(el[0], 'Backspace');
   });
 
+  test('composed text is typed when the composition ends', function (done) {
+    var typed = '';
+    saneKeyboardEvents(
+      el[0],
+      mockController({
+        keystroke: noop,
+        typedText: function (text) {
+          typed += text;
+        }
+      })
+    );
+
+    // Dead ^ followed by 2, as with an AZERTY keyboard
+    trigger.keydown(el[0], 'Dead');
+    el[0].dispatchEvent(new CompositionEvent('compositionstart'));
+    el.val('^');
+    trigger.input(el[0]);
+    trigger.keyup(el[0], 'Dead');
+    setTimeout(function () {
+      assert.equal(typed, '', 'nothing is typed during the composition');
+      trigger.keydown(el[0], '2');
+      el.val('^2');
+      el[0].dispatchEvent(
+        new CompositionEvent('compositionend', { data: '^2' })
+      );
+      trigger.input(el[0]);
+      trigger.keyup(el[0], '2');
+      setTimeout(function () {
+        assert.equal(typed, '^2');
+        assert.equal(el.val(), '', 'the textarea is emptied');
+        done();
+      });
+    });
+  });
+
+  test('several characters typed at once', function (done) {
+    var typed = '';
+    saneKeyboardEvents(
+      el[0],
+      mockController({
+        keystroke: noop,
+        typedText: function (text) {
+          typed += text;
+        }
+      })
+    );
+
+    // Dead ^ followed by 2 without composition events, as on Windows
+    trigger.keydown(el[0], '2');
+    el.val('^2');
+    trigger.input(el[0]);
+    trigger.keyup(el[0], '2');
+    setTimeout(function () {
+      assert.equal(typed, '^2');
+      assert.equal(el.val(), '', 'the textarea is emptied');
+      done();
+    });
+  });
+
   suite('select', function () {
     test("select populates the textarea but doesn't call .typedText()", function () {
       var shim = saneKeyboardEvents(el[0], mockController({ keystroke: noop }));
